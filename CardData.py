@@ -17,18 +17,23 @@ class Card:
         self.score = (row.iloc[0]['Score'])
         self.rarity = (row.iloc[0]['Rarity'])
         self.onPlay = (row.iloc[0]['On Play'])
+        self.imageLink= (row.iloc[0]['Office'])
+        temp = self.imageLink.split("/")
+        self.imageName = temp[len(temp)-1]
+        
+        
         self.diceCount = (row.iloc[0]['DiceNumber'])
-        self.diceDmg = [">"]
+        self.diceDmg = []
         for i in range(int(self.diceCount)):
             self.diceDmg.append(
                 str(i + 1) + ": " + (row.iloc[0]['D' + str(i + 1) + " Roll"]))
         self.diceDmgStr = SEPORATOR.join(self.diceDmg)
-        self.diceType = [">"]
+        self.diceType = []
         for i in range(int(self.diceCount)):
             self.diceType.append(
                 str(i + 1) + ": " + (row.iloc[0]['D' + str(i + 1) + " Type"]))
         self.diceTypeStr = SEPORATOR.join(self.diceType)
-        self.diceEff = [">"]
+        self.diceEff = []
         for i in range(int(self.diceCount)):
             if ((row.iloc[0]['D' + str(i + 1) + " Effect"]) != 0):
                 self.diceEff.append(
@@ -91,4 +96,3 @@ class Card:
 
 
 x = Card("Parry")
-print(x.toString())

@@ -1,6 +1,7 @@
 import discord
 from discord.ext import commands
 import random
+
 #wikipedia
 import wikipedia
 from CardData import Card
@@ -11,6 +12,7 @@ bot = commands.Bot(command_prefix=commands.when_mentioned_or("?"))
 #bot = commands.Bot(command_prefix='?')
 @bot.command()
 async def search(ctx,*, arx:str):
+    
     name = arx
     CardTemp= Card(name)
     embed=discord.Embed()
@@ -20,7 +22,10 @@ async def search(ctx,*, arx:str):
     embed.add_field(name="Dice Rolls",value=CardTemp.diceDmgStr,inline = True)
     embed.add_field(name="Dice Effects",value=CardTemp.diceEffStr,inline = True)
     embed.add_field(name="Dice Type",value=CardTemp.diceTypeStr,inline = True)
-    await ctx.send(embed=embed)
+    
+    file = discord.File(CardTemp.imageLink, filename="image.png")
+    embed.set_image(url="attachment://image.png")
+    await ctx.send(file=file,embed=embed)
 
 
 
