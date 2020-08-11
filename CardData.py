@@ -17,7 +17,7 @@ class Card:
         self.score = (row.iloc[0]['Score'])
         self.rarity = (row.iloc[0]['Rarity'])
         self.onPlay = (row.iloc[0]['On Play'])
-        self.imageLink= (row.iloc[0]['Office'])
+        self.imageLink= (row.iloc[0]['Office']).replace("\\","/")
         temp = self.imageLink.split("/")
         self.imageName = temp[len(temp)-1]
         
@@ -95,4 +95,3 @@ class Card:
         return final_str
 
 
-x = Card("Parry")

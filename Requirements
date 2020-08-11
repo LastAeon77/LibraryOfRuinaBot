@@ -1,0 +1,8 @@
+Discord: 
+python3 -m pip install -U discord.py
+
+Wikipedica:
+pip3 install wikipedia
+
+Pandas
+pip3 install pandas
