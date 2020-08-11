@@ -2,7 +2,7 @@ import pandas as pd
 import os
 from GuildAndToken import SEPORATOR
 
-
+#stores the card's data and output it
 class Card:
     def __init__(self, CardName):
         df = pd.read_csv("CardData.csv")
@@ -17,23 +17,26 @@ class Card:
         self.score = (row.iloc[0]['Score'])
         self.rarity = (row.iloc[0]['Rarity'])
         self.onPlay = (row.iloc[0]['On Play'])
-        self.imageLink= (row.iloc[0]['Office']).replace("\\","/")
+        if((row.iloc[0]['Office'])!=0):
+            self.imageLink= (row.iloc[0]['Office'])#.replace("\\","/")
+        else:
+            self.imageLink=("Card\\NotAvailable.png")#.replace("\\","/")
         temp = self.imageLink.split("/")
         self.imageName = temp[len(temp)-1]
         
         
         self.diceCount = (row.iloc[0]['DiceNumber'])
-        self.diceDmg = []
+        self.diceDmg = ['> ']
         for i in range(int(self.diceCount)):
             self.diceDmg.append(
                 str(i + 1) + ": " + (row.iloc[0]['D' + str(i + 1) + " Roll"]))
         self.diceDmgStr = SEPORATOR.join(self.diceDmg)
-        self.diceType = []
+        self.diceType = ['> ']
         for i in range(int(self.diceCount)):
             self.diceType.append(
                 str(i + 1) + ": " + (row.iloc[0]['D' + str(i + 1) + " Type"]))
         self.diceTypeStr = SEPORATOR.join(self.diceType)
-        self.diceEff = []
+        self.diceEff = ['> ']
         for i in range(int(self.diceCount)):
             if ((row.iloc[0]['D' + str(i + 1) + " Effect"]) != 0):
                 self.diceEff.append(
@@ -43,41 +46,6 @@ class Card:
                 self.diceEff.append(str(i + 1) + ": ")
         self.diceEffStr = SEPORATOR.join(self.diceEff)
 
-    def getID(self):
-        return self.id
-
-    def getChapter(self):
-        return self.chapter
-
-    def getObtainable(self):
-        return self.obtainable
-
-    def getCost(self):
-        return self.cost
-
-    def getName(self):
-        return self.name
-
-    def getScore(self):
-        return self.score
-
-    def getRarity(self):
-        return self.rarity
-
-    def getOnPlay(self):
-        return self.onPlay
-
-    def getDiceCount(self):
-        return self.diceCount
-
-    def getDiceDmg(self):
-        return self.diceDmg
-
-    def getDiceType(self):
-        return self.diceType
-
-    def getDiceEff(self):
-        return self.diceEff
 
     def toString(self):
         final_str = (
@@ -95,3 +63,4 @@ class Card:
         return final_str
 
 
+Card("the red notes")
