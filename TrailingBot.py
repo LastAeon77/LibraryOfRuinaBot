@@ -4,6 +4,7 @@ import random
 
 #wikipedia
 import wikipedia
+import pandas as pd
 from CardData import Card
 from GuildAndToken import TOKEN
 from GuildAndToken import GUILD
@@ -17,6 +18,7 @@ bot = commands.Bot(command_prefix=commands.when_mentioned_or("?"))
 async def search(ctx, *, arx: str):
 
     name = arx
+
     try:
         CardTemp = Card(name)
         embed = discord.Embed()
@@ -32,13 +34,12 @@ async def search(ctx, *, arx: str):
         embed.set_image(url="attachment://image.png")
         await ctx.send(file=file, embed=embed)
     except:
-        Others=OtherOptions(name)
-        embed = discord.Embed()
-        embed.color = 3066993
-        embed.set_author(name=f"We couldn't find {str(arx)}, Did you mean: \n")
-        embed.description = Others.toString()
-
-        await ctx.send(embed=embed)
+        Others = OtherOptions(name)
+        mewembed = discord.Embed()
+        mewembed.color = 3066993
+        mewembed.set_author(name=f"We couldn't find {str(arx)}, Did you mean: \n")
+        mewembed.description = Others.toString()
+        await ctx.send(embed=mewembed)
 
 
 @bot.event

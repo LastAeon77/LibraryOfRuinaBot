@@ -18,9 +18,9 @@ class Card:
         self.rarity = (row.iloc[0]['Rarity'])
         self.onPlay = (row.iloc[0]['On Play'])
         if((row.iloc[0]['Office'])!=0):
-            self.imageLink= (row.iloc[0]['Office'])#.replace("\\","/")
+            self.imageLink= (row.iloc[0]['Office']).replace("\\","/")
         else:
-            self.imageLink=("Card\\NotAvailable.png")#.replace("\\","/")
+            self.imageLink=("Card/NotAvailable.PNG")
         temp = self.imageLink.split("/")
         self.imageName = temp[len(temp)-1]
         
@@ -62,5 +62,8 @@ class Card:
         )
         return final_str
 
+dd=Card("The Red Notes")
+print(dd.imageLink)
+dd2=Card("Parry")
+print(dd2.imageLink)
 
-Card("the red notes")
