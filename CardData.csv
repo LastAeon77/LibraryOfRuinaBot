@@ -144,10 +144,10 @@ Id,Chapter,Obtainable,Cost,Name,Office,Score,Rarity,On Play,DiceNumber,D1 Type,D
 407001,4,TRUE,3,Heavy Peaks,Card\Urban Plague\Bremen\Bremen_HeavyPeaks.png,9.875,Limited,enemy2weak1thisRound,1,Hit,5-18,,,,,,,,,,
 407002,4,TRUE,2,Unforgettable Melody,Card\Urban Plague\Bremen\Bremen_UnforgettableMelody.png,9.625,Limited,ally2strength1thisRound,3,Slash,3-5,,Guard,2-3,,Hit,2-6,,,,
 407003,4,TRUE,3,Hard Rehearsal,Card\Urban Plague\Bremen\Bremen_HardRehearsle.png,11.875,Limited,energy2,3,Evasion,1-5,,Hit,3-8,,Slash,3-7,,,,
-407004,4,TRUE,2,Shrine to Music,,9.375,Hardcover,enemy1weak1thisRound,3,Hit,2-4,,Hit,3-9,,Guard,1-2,,,,
+407004,4,TRUE,2,Shrine to Music,Card\Urban Plague\Bremen\Shrine_to_Music.png,9.375,Hardcover,enemy1weak1thisRound,3,Hit,2-4,,Hit,3-9,,Guard,1-2,,,,
 407005,4,TRUE,1,Upbeat Performance,Card\Urban Plague\Bremen\Bremen_UpbeatPerformance.png,7.625,Paperback,,2,Hit,3-6,,Slash,2-6,,,,,,,
 407006,4,TRUE,2,Tendon Chords,Card\Urban Plague\Bremen\Bremen_TendonChords.png,7.5,Paperback,,2,Hit,3-5,ally2strength1atk,Slash,3-5,ally2recover3atk,,,,,,
-407007,4,TRUE,1,The Red Notes,,4.625,Hardcover,ally2strength1thisRound,2,Hit,1-5,,Hit,1-4,,,,,,,
+407007,4,TRUE,1,The Red Notes,Card\Urban Plague\Bremen\Bremen_TendonChords.png,4.625,Hardcover,ally2strength1thisRound,2,Hit,1-5,,Hit,1-4,,,,,,,
 408001,4,TRUE,3,Transpierce,Card\Urban Plague\Wedge\Wedge_Transpierce.png,14.375,Limited,,2,Penetrate,6-18,damage5atk,Guard,2-7,,,,,,,
 408002,4,TRUE,2,Sparking Spear,Card\Urban Plague\Wedge\Wedge_SparkingSpear.png,9,Hardcover,drawCard,2,Penetrate,3-7,,Penetrate,3-7,,,,,,,
 408003,4,TRUE,3,Collision,Card\Urban Plague\Wedge\Wedge_Collision.png,11,Limited,,2,Penetrate,4-8,energy1pw,Penetrate,4-8,energy1pw,,,,,,
@@ -168,13 +168,13 @@ Id,Chapter,Obtainable,Cost,Name,Office,Score,Rarity,On Play,DiceNumber,D1 Type,D
 501005,5,TRUE,2,Endless Battle,Card\Urban Nightmare\Shi\Shi_EndlessBattle.png,12.375,Paperback,powerUp1Hp,3,Guard,4-7,,Hit,2-4,,Slash,3-7,,,,
 501006,5,TRUE,1,Desperate Struggle,Card\Urban Nightmare\Shi\Shi_DesperateStruggle.png,5.875,Paperback,clashPowerUp,2,Slash,2-5,,Slash,2-4,,,,,,,
 501007,5,TRUE,0,To Overcome Crisis,Card\Urban Nightmare\Shi\Shi_ToOvercomeCrisis.png,3.5,Hardcover,drawCard,1,Slash,2-6,energy1atkAndHp,,,,,,,,,
-502001,5,TRUE,3,Automated Movement,,17.75,Limited,quickness2,4,Evasion,2-7,,Hit,3-8,,Hit,4-7,,Evasion,2-7,counter
-502002,5,TRUE,2,Marionette,,13,Hardcover,,3,Guard,2-7,,Hit,3-8,disarm1atk,Evasion,2-8,,,,
-502003,5,TRUE,3,Repressed Flesh,,20,Objet d'art,drawCard,4,Guard,4-6,,Hit,3-8,powerDown3targetDfn,Hit,4-9,break3atk,Hit,3-7,counter
-502004,5,TRUE,3,Forceful Gesture,,13.5,Limited,drawCard,2,Guard,4-8,,Hit,5-13,weakDisarmBinding1atk,,,,,,
-502005,5,TRUE,1,Gigigig,,7.625,Hardcover,energy2,2,Guard,2-6,,Hit,3-6,,,,,,,
-502006,5,TRUE,2,Creak,,11.75,Hardcover,,3,Hit,3-7,,Hit,3-6,,Guard,2-5,,,,
-502007,5,TRUE,0,Puppet Blockade,,5.25,Hardcover,energy1,2,Guard,2-6,,Hit,1-3,,,,,,,
+502001,5,TRUE,3,Automated Movement,Card\Urban Nightmare\Puppet\Weighty_Puppet.png,17.75,Limited,quickness2,4,Evasion,2-7,,Hit,3-8,,Hit,4-7,,Evasion,2-7,counter
+502002,5,TRUE,2,Marionette,Card\Urban Nightmare\Puppet\Marrionette.png,13,Hardcover,,3,Guard,2-7,,Hit,3-8,disarm1atk,Evasion,2-8,,,,
+502003,5,TRUE,3,Repressed Flesh,Card\Urban Nightmare\Puppet\Repressed_Flesh.png,20,Objet d'art,drawCard,4,Guard,4-6,,Hit,3-8,powerDown3targetDfn,Hit,4-9,break3atk,Hit,3-7,counter
+502004,5,TRUE,3,Forceful Gesture,Card\Urban Nightmare\Puppet\Forceful_Gesture.png,13.5,Limited,drawCard,2,Guard,4-8,,Hit,5-13,weakDisarmBinding1atk,,,,,,
+502005,5,TRUE,1,Gigigig,Card\Urban Nightmare\Puppet\Gigigig.png,7.625,Hardcover,energy2,2,Guard,2-6,,Hit,3-6,,,,,,,
+502006,5,TRUE,2,Creak,Card\Urban Nightmare\Puppet\Creak.png,11.75,Hardcover,,3,Hit,3-7,,Hit,3-6,,Guard,2-5,,,,
+502007,5,TRUE,0,Puppet Blockade,Card\Urban Nightmare\Puppet\Puppet_Blockade.png,5.25,Hardcover,energy1,2,Guard,2-6,,Hit,1-3,,,,,,,
 503001,5,FALSE,3,Sharp Nails,Card\Urban Nightmare\Circus\Circus_SharpNails.png,22,Hardcover,,4,Guard,4-8,,Hit,4-8,powerDown1target,Penetrate,4-8,recoverBreak5atk,Slash,4-8,counter
 503002,5,FALSE,1,Circus Knives,Card\Urban Nightmare\Circus\Circus_CircusKnives.png,7,Hardcover,,2,Hit,2-6,bleeding2atk,Slash,2-6,,,,,,,
 503003,5,FALSE,1,Juggling,Card\Urban Nightmare\Circus\Circus_Juggling.png,5.75,Hardcover,exhaust,1,Hit,5-7,paralysis2atk,,,,,,,,,
@@ -192,3 +192,8 @@ Id,Chapter,Obtainable,Cost,Name,Office,Score,Rarity,On Play,DiceNumber,D1 Type,D
 504005,5,TRUE,1,Extract Fuel,Card\Urban Nightmare\Sweepers\Sweepers_ExtractFuel.png,7.25,Paperback,energy2,2,Penetrate,3-6,recoverHp2atk,Guard,2-5,,,,,,,
 504006,5,TRUE,1,Night in the Backstreets,Card\Urban Nightmare\Sweepers\Sweepers_NightInTheBackstreets.png,11.25,Paperback,powerDown2thisRound,2,Hit,5-7,recoverHp3atk,Penetrate,4-8,recoverHp2atk,,,,,,
 1100000,5,FALSE,1,,,3.5,Paperback,,1,Guard,2-6,,,,,,,,,,
+1100001,X,TRUE,6,Fourth Match Flame,Card\EGO\History\Fourth_Match_Flame.png,,EGO,Mass Attack Page,1,Slash,5-32,"On Hit, Inflict 5 Burn",,,,,,,,,
+1100002,X,TRUE,3,The Forgotten,Card\EGO\History\The_Forgotten.png,"",EGO,"",1,Blunt,9-25,"On Clash Win, Destroy all of the target's dice","","","","","","","","",""
+1100003,X,TRUE,4,Wingbeat,Card\EGO\History\Wingbeat.png,"",EGO,"",2,Slash,3-7,"On Hit, Recover 3 HP; recycle this die unless it rolls the minimum value (Up to 5 times)",Slash,6-8,"","","","","","",""
+1100004,X,TRUE,3,Hornet,Card\EGO\History\Hornet.png,"",EGO,"",1,Pierce,9-32,"On Hit, Inflict 5 Fragile next Scene","","","","","","","","",""
+1100005,X,TRUE,5,Green Stem,Card\EGO\History\Green_Stem.png,"",EGO,,3,Pierce,3-9,Individual,Pierce,3-9,Individual,Pierce,3-10,Individual,"","",""
