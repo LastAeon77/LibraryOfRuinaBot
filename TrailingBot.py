@@ -32,7 +32,7 @@ async def search(ctx, *, arx: str):
         embed.add_field(name="Dice Rolls", value=CardTemp.diceDmgStr, inline=True)
         embed.add_field(name="Dice Effects", value=CardTemp.diceEffStr, inline=True)
         embed.add_field(name="Dice Type", value=CardTemp.diceTypeStr, inline=True)
-        file = discord.File(CardTemp.imageLink, filename="image.png")
+        file = discord.File(CardTemp.imageLink, filename="image.png", spoiler=True)
         embed.set_image(url="attachment://image.png")
         await ctx.send(file=file, embed=embed)
 

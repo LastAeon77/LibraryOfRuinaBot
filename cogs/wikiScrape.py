@@ -30,7 +30,7 @@ class LibraryScrape:
         self.contents += temp[1].get_text()
         self.contents += "\n"
         self.contents += temp[2].get_text()
-        self.contents += '\n'
+        self.contents += "\n"
         self.contents += self.link
 
         final = []
@@ -55,19 +55,22 @@ class LibraryScrape:
         self.contents += temp[1].get_text()
         self.contents += "\n"
         self.contents += temp[2].get_text()
-        self.contents += temp[3].get_text()
+        #self.contents += temp[3].get_text()
         final = []
         final.append(self.imageLink)
         final.append(self.contents)
         return final
 
     def Floors(self):
-        img = self.soup.find_all("a", attrs={"class": "image image-thumbnail"})
-        k = []
-        for imgs in img:
-            k.append(imgs)
-        src = k[0]["href"]
-        self.imageLink = src
+        try:
+            img = self.soup.find_all("a", attrs={"class": "image image-thumbnail"})
+            k = []
+            for imgs in img:
+                k.append(imgs)
+            src = k[0]["href"]
+            self.imageLink = src
+        except:
+            self.imageLink = "https://i.imgflip.com/j69nf.jpg"
         words = self.soup.find_all("p")
         temp = []
         for paragraphs in words:
@@ -118,6 +121,8 @@ def setup(bot):
     bot.add_cog(LibraryStuff(bot))
 
 
+x = LibraryScrape("key_pages")
+print(x.Mechanics())
 # link = "https://library-of-ruina.fandom.com/wiki/Floor_of_History"
 # source = requests.get(link).text
 # soup = BeautifulSoup(source, "lxml")

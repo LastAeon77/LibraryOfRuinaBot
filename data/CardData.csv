@@ -169,7 +169,7 @@ Id,Chapter,Obtainable,Cost,Name,Office,Score,Rarity,On Play,DiceNumber,D1 Type,D
 501006,5,TRUE,1,Desperate Struggle,Card\Urban Nightmare\Shi\Shi_DesperateStruggle.png,5.875,Paperback,clashPowerUp,2,Slash,2-5,,Slash,2-4,,,,,,,
 501007,5,TRUE,0,To Overcome Crisis,Card\Urban Nightmare\Shi\Shi_ToOvercomeCrisis.png,3.5,Hardcover,drawCard,1,Slash,2-6,energy1atkAndHp,,,,,,,,,
 502001,5,TRUE,3,Automated Movement,Card\Urban Nightmare\Puppet\Weighty_Puppet.png,17.75,Limited,quickness2,4,Evasion,2-7,,Hit,3-8,,Hit,4-7,,Evasion,2-7,counter
-502002,5,TRUE,2,Marionette,Card\Urban Nightmare\Puppet\Marrionette.png,13,Hardcover,,3,Guard,2-7,,Hit,3-8,disarm1atk,Evasion,2-8,,,,
+502002,5,TRUE,2,Marionette,Card\Urban Nightmare\Puppet\Marionette.png,13,Hardcover,,3,Guard,2-7,,Hit,3-8,disarm1atk,Evasion,2-8,,,,
 502003,5,TRUE,3,Repressed Flesh,Card\Urban Nightmare\Puppet\Repressed_Flesh.png,20,Objet d'art,drawCard,4,Guard,4-6,,Hit,3-8,powerDown3targetDfn,Hit,4-9,break3atk,Hit,3-7,counter
 502004,5,TRUE,3,Forceful Gesture,Card\Urban Nightmare\Puppet\Forceful_Gesture.png,13.5,Limited,drawCard,2,Guard,4-8,,Hit,5-13,weakDisarmBinding1atk,,,,,,
 502005,5,TRUE,1,Gigigig,Card\Urban Nightmare\Puppet\Gigigig.png,7.625,Hardcover,energy2,2,Guard,2-6,,Hit,3-6,,,,,,,
