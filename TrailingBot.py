@@ -1,22 +1,26 @@
 import discord
 from discord.ext import commands
-import random
+import json
 
-#wikipedia
-import wikipedia
-import pandas as pd
-from CardData import Card
-from GuildAndToken import TOKEN
-from GuildAndToken import GUILD
-from OtherOptions import OtherOptions
+# wikipedia
+# import pandas as pd
+
+from CustomClasses.CardData import Card
+
+# from CustomClasses.GuildAndToken import TOKEN
+# from CustomClasses.GuildAndToken import GUILD
+from CustomClasses.OtherOptions import OtherOptions
+
+import os
 
 bot = commands.Bot(command_prefix=commands.when_mentioned_or("?"))
+with open("resources/settings.json", "r") as f:
+    bot.config = json.load(f)
 
-
-#bot = commands.Bot(command_prefix='?')
+# bot = commands.Bot(command_prefix='?')
 @bot.command()
 async def search(ctx, *, arx: str):
-
+    """Searches for card in the library"""
     name = arx
 
     try:
@@ -26,13 +30,12 @@ async def search(ctx, *, arx: str):
         embed.set_author(name=str(arx))
         embed.description = CardTemp.toString()
         embed.add_field(name="Dice Rolls", value=CardTemp.diceDmgStr, inline=True)
-        embed.add_field(name="Dice Effects",
-                        value=CardTemp.diceEffStr,
-                        inline=True)
+        embed.add_field(name="Dice Effects", value=CardTemp.diceEffStr, inline=True)
         embed.add_field(name="Dice Type", value=CardTemp.diceTypeStr, inline=True)
         file = discord.File(CardTemp.imageLink, filename="image.png")
         embed.set_image(url="attachment://image.png")
         await ctx.send(file=file, embed=embed)
+
     except:
         Others = OtherOptions(name)
         mewembed = discord.Embed()
@@ -44,10 +47,11 @@ async def search(ctx, *, arx: str):
 
 @bot.event
 async def on_ready():
-    print('Logged in as')
+    """Tells owner that bot is ready"""
+    print("Logged in as")
     print(bot.user.name)
     print(bot.user.id)
-    print('------')
+    print("------")
 
 
 @bot.command()
@@ -56,19 +60,13 @@ async def add(ctx, left: int, right: int):
     await ctx.send(left + right)
 
 
-@bot.command()
-async def wiki(ctx, arx: str):
-    cont = wikipedia.page(arx)
-    ans = ''
-    ans += '**' + cont.title + '**' + '\n'
-    ans += cont.content
-    await ctx.channel.send(ans[0:200])
+if __name__ == "__main__":  # check if in main
+    for file in os.listdir("cogs"):
+        if file.endswith(".py"):
+            try:
+                bot.load_extension("cogs." + os.path.splitext(file)[0])
+                print(f"Extension {file} loaded.")
+            except Exception as e:
+                print(f"Failed to load extension {file}: {e}")
 
-
-@bot.command()
-async def joined(ctx, member: discord.Member):
-    """Says when a member joined."""
-    await ctx.send('{0.name} joined in {0.joined_at}'.format(member))
-
-
-bot.run(TOKEN)
+    bot.run(bot.config["discord"]["token"])
