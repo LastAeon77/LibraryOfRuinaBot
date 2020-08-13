@@ -30,6 +30,9 @@ class LibraryScrape:
         self.contents += temp[1].get_text()
         self.contents += "\n"
         self.contents += temp[2].get_text()
+        self.contents += '\n'
+        self.contents += self.link
+
         final = []
         final.append(self.imageLink)
         final.append(self.contents)
