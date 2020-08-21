@@ -95,7 +95,7 @@ Id,Chapter,Obtainable,Cost,Name,Office,Score,Rarity,On Play,DiceNumber,D1 Type,D
 402002,4,TRUE,1,Return Fire,Card\Urban Plague\FullStop\FullStop_ReturnFire.png,7.375,Hardcover,exhaust,2,Penetrate,1-8,weak1atk,Guard,3-5,,,,,,,
 402003,4,FALSE,2,Indiscriminate Shots,,10.875,Limited,exhaust,3,Penetrate,1-8,powerUpNext2pl,Penetrate,1-8,powerUpNext2pl,Hit,1-8,,,,
 402004,4,TRUE,1,I Hate CQC,Card\Urban Plague\FullStop\FullStop_IHateCQC.png,11.875,Hardcover,exhaust,3,Penetrate,2-6,weak1atk,Penetrate,2-6,,Evasion,3-8,,,,
-402005,4,TRUE,2,Not Another Step,Card\Urban Plague\FullStop\Carnival_FascinatingFabric.png,15.125,Hardcover,exhaust,3,Penetrate,4-7,,Penetrate,4-7,weak1atk,Guard,3-8,,,,
+402005,4,TRUE,2,Not Another Step,,15.125,Hardcover,exhaust,3,Penetrate,4-7,,Penetrate,4-7,weak1atk,Guard,3-8,,,,
 402006,4,TRUE,1,Take the Shot,Card\Urban Plague\FullStop\FullStop_TakeTheShot.png,9.5,Paperback,exhaust,3,Hit,2-6,,Hit,2-6,,Penetrate,1-5,,,,
 402007,4,TRUE,2,Headshot,Card\Urban Plague\FullStop\FullStop_Headshot.png,7.625,Paperback,exhaust,1,Penetrate,5-12,bleeding3atk,,,,,,,,,
 402008,4,TRUE,1,Target Spotted,,7,Paperback,exhaust,2,Penetrate,2-6,,Penetrate,2-6,weak1atk,,,,,,
