@@ -17,6 +17,7 @@ bot = commands.Bot(command_prefix=commands.when_mentioned_or("?"))
 with open("resources/settings.json", "r") as f:
     bot.config = json.load(f)
 
+
 # bot = commands.Bot(command_prefix='?')
 @bot.command()
 async def search(ctx, *, arx: str):

@@ -5,7 +5,7 @@ from CustomClasses.GuildAndToken import SEPORATOR
 # stores the card's data and output it
 class Card:
     def __init__(self, CardName):
-        #This way I don't need to upload to linux virtual machine
+        # This way I don't need to upload to linux virtual machine
         df = pd.read_csv("https://raw.githubusercontent.com/LastAeon77/LibraryOfRuinaBot/master/data/CardData.csv")
         df.fillna(0, inplace=True)
         df["Name"] = df["Name"].str.lower()
