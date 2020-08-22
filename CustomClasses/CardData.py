@@ -1,5 +1,5 @@
 import pandas as pd
-from GuildAndToken import SEPORATOR
+from CustomClasses.GuildAndToken import SEPORATOR
 
 
 # stores the card's data and output it
