@@ -1,12 +1,12 @@
 import pandas as pd
-from CustomClasses.GuildAndToken import SEPORATOR
+SEPORATOR = "\n> "
 
 
 # stores the card's data and output it
 class Card:
     def __init__(self, CardName):
         # This way I don't need to upload to linux virtual machine
-        df = pd.read_csv("https://raw.githubusercontent.com/LastAeon77/LibraryOfRuinaBot/master/data/CardData.csv")
+        df = pd.read_csv("./data/CardData.csv")
         df.fillna(0, inplace=True)
         df["Name"] = df["Name"].str.lower()
         row = df.loc[df["Name"] == CardName.lower()]
@@ -63,5 +63,3 @@ class Card:
             # f"*Die Effect*:\n> {self.diceEffStr}\n"
         )
         return final_str
-
-

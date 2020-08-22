@@ -214,4 +214,4 @@ Failure: Deal 20 damage to self",2,Pierce,2-4,,Slash,3-6,"If 10 Charge was spent
 506004,5,TRUE,2,Dimensional Rift,Card\Urban Nightmare\WCorp\Warp_Dimensional_Rift.png,,Hardcover,On Use: Gain 5 Charge,2,Slash,3-8,,Slash,3-7,,,,,,,
 506005,5,TRUE,3,Ripple,Card\Urban Nightmare\WCorp\Warp_Ripple.png,,Limited,On Use: Use 3 Charge to boost Power of all dice on this page by +2,2,Evade,2-5,On Clash Lose: Add +2 Power to the next die,Blunt,4-17,On Hit: Inflict 2 Bind next Scene,,,,,,
 506006,5,TRUE,3,Overcharge,Card\Urban Nightmare\WCorp\Warp_Overcharge.png,,Hardcover,On Use: Gain 9 Charge and become immobilized next scene,4,Pierce,5-13,,Slash,4-12,,Pierce,5-11,,Block,2-6,Counter
-506007,5,TRUE,0,Energy Cycle,Card\Urban Nightmare\WCorp\Warp_Energy_Cycle.png,"",Paperback,On Use: Gain 3 Charge,2,Pierce,2-5,"",Blunt,2-4,"","","","","","",""
+506007,5,TRUE,0,Energy Cycle,Card\Urban Nightmare\WCorp\Warp_Energy_Cycle.png,,Paperback,On Use: Gain 3 Charge,2,Pierce,2-5,,Blunt,2-4,,,,,,,

@@ -55,7 +55,7 @@ class LibraryScrape:
         self.contents += temp[1].get_text()
         self.contents += "\n"
         self.contents += temp[2].get_text()
-        #self.contents += temp[3].get_text()
+        # self.contents += temp[3].get_text()
         final = []
         final.append(self.imageLink)
         final.append(self.contents)
@@ -121,8 +121,8 @@ def setup(bot):
     bot.add_cog(LibraryStuff(bot))
 
 
-x = LibraryScrape("key_pages")
-print(x.Mechanics())
+# x = LibraryScrape("key_pages")
+# print(x.Mechanics())
 # link = "https://library-of-ruina.fandom.com/wiki/Floor_of_History"
 # source = requests.get(link).text
 # soup = BeautifulSoup(source, "lxml")
