@@ -204,3 +204,14 @@ Id,Chapter,Obtainable,Cost,Name,Office,Score,Rarity,On Play,DiceNumber,D1 Type,D
 505005,5,TRUE,1,Faith,Card\Urban Nightmare\TheIndex\TheIndex_Faith.png,,Paperback,On use: Restore 1 Light,2,Pierce,3-6,,Slash,2-5,,,,,,,
 505006,5,TRUE,1,Sense Quarry,Card\Urban Nightmare\TheIndex\TheIndex_SenseQuarry.png,,Limited,"If there are 7 or more Cards in Hand, All dice of this card Gains +1 Power",3,Block,2-4,,Block,2-4,,Pierce,2-6,On Hit: Inflict 1 Bind next Scene,,,
 505007,5,TRUE,1,Proselyte's Blade,Card\Urban Nightmare\TheIndex\TheIndex_ProselyteBlade.png,,Hardcover,All dice lose 3 power for this scene,2,Blunt,6-10,,Pierce,5-10,,,,,,,
+506001,5,TRUE,2,Rip Space,Card\Urban Nightmare\WCorp\Warp_Rip_Space.png,,Objet d'art,"Exclusive Combat Page. Use: Spend all charge; has a (Charge x 9)% chance to succeed. 
+
+Success: All dice on this page gain +6 power
+
+Failure: Deal 20 damage to self",2,Pierce,2-4,,Slash,3-6,"If 10 Charge was spent at once, add +2 Power",,,,,,
+506002,5,TRUE,1,Rewind,Card\Urban Nightmare\WCorp\Warp_Rewind.png,,Paperback,On Use: Gain 3 Charge,3,Evade,1-6,,Block,2-5,,Pierce,2-6,On Hit: Recover 2 HP,,,
+506003,5,TRUE,1,Leap,Card\Urban Nightmare\WCorp\Warp_Leap.png,,Paperback,On Use: Gain 2 Charge and restore 1 Light,2,Slash,2-5,,Blunt,1-7,,,,,,,
+506004,5,TRUE,2,Dimensional Rift,Card\Urban Nightmare\WCorp\Warp_Dimensional_Rift.png,,Hardcover,On Use: Gain 5 Charge,2,Slash,3-8,,Slash,3-7,,,,,,,
+506005,5,TRUE,3,Ripple,Card\Urban Nightmare\WCorp\Warp_Ripple.png,,Limited,On Use: Use 3 Charge to boost Power of all dice on this page by +2,2,Evade,2-5,On Clash Lose: Add +2 Power to the next die,Blunt,4-17,On Hit: Inflict 2 Bind next Scene,,,,,,
+506006,5,TRUE,3,Overcharge,Card\Urban Nightmare\WCorp\Warp_Overcharge.png,,Hardcover,On Use: Gain 9 Charge and become immobilized next scene,4,Pierce,5-13,,Slash,4-12,,Pierce,5-11,,Block,2-6,Counter
+506007,5,TRUE,0,Energy Cycle,Card\Urban Nightmare\WCorp\Warp_Energy_Cycle.png,"",Paperback,On Use: Gain 3 Charge,2,Pierce,2-5,"",Blunt,2-4,"","","","","","",""

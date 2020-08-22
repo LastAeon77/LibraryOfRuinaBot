@@ -1,5 +1,5 @@
 import pandas as pd
-from CustomClasses.GuildAndToken import SEPORATOR
+from GuildAndToken import SEPORATOR
 
 
 # stores the card's data and output it
@@ -65,7 +65,3 @@ class Card:
         return final_str
 
 
-dd = Card("The Red Notes")
-print(dd.imageLink)
-dd2 = Card("Parry")
-print(dd2.imageLink)
