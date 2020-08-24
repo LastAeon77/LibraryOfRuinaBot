@@ -87,41 +87,42 @@ class DeckMake(commands.Cog):
         if len(cardNames) != 10:
             await ctx.send("Please type in proper syntax")
         # print(type(username))
-        if checkExist(cardNames):
-            try:
-                # print(f"get username: {username}")
-                deck_code = getPrevID() + 1
-                # print(f"get deckcode: {deck_code}")
-                with sqlite3.connect(DECKSPATH) as c:
-                    cur = c.cursor()
-                    cur.execute(
-                        DECK_INSERT,
-                        (
-                            deck_code,
-                            cardNames[0],
-                            username,
-                            cardNames[1],
-                            cardNames[2],
-                            cardNames[3],
-                            cardNames[4],
-                            cardNames[5],
-                            cardNames[6],
-                            cardNames[7],
-                            cardNames[8],
-                            cardNames[9],
-                        ),
-                    )
-                await ctx.send(
-                    f"""Your deck has been added! Deck code is:{deck_code}
-                     Deck name is: {cardNames[0]}"""
-                )
-            except sqlite3.IntegrityError:
-                await ctx.send(
-                    f"""Your deckname:{cardNames[0]} is
-                already taken! Be more original"""
-                )
         else:
-            await ctx.send("Some of your cards might've not existed!")
+            if checkExist(cardNames):
+                try:
+                    # print(f"get username: {username}")
+                    deck_code = getPrevID() + 1
+                    # print(f"get deckcode: {deck_code}")
+                    with sqlite3.connect(DECKSPATH) as c:
+                        cur = c.cursor()
+                        cur.execute(
+                            DECK_INSERT,
+                            (
+                                deck_code,
+                                cardNames[0],
+                                username,
+                                cardNames[1],
+                                cardNames[2],
+                                cardNames[3],
+                                cardNames[4],
+                                cardNames[5],
+                                cardNames[6],
+                                cardNames[7],
+                                cardNames[8],
+                                cardNames[9],
+                            ),
+                        )
+                    await ctx.send(
+                        f"""Your deck has been added! Deck code is:{deck_code}
+                        Deck name is: {cardNames[0]}"""
+                    )
+                except sqlite3.IntegrityError:
+                    await ctx.send(
+                        f"""Your deckname:{cardNames[0]} is
+                    already taken! Be more original"""
+                    )
+            else:
+                await ctx.send("Some of your cards might've not existed!")
 
     @deck.command()
     async def mydeck(self, ctx):

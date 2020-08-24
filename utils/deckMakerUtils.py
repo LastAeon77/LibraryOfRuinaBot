@@ -41,3 +41,9 @@ def checkExist(listofcards):
         if row.empty:
             return False
     return True
+
+
+# arx = "WeebFuck,Boundary of death,Boundary of death,Boundary of death,Boundary of death,Boundary of death,Boundary of death,Boundary of death,Boundary of death,Boundary of death"
+# cardNames = arx.split(",")
+# print(cardNames)
+# print(checkExist(cardNames))
