@@ -1,5 +1,7 @@
 import sqlite3
 import pandas as pd
+from PIL import Image
+
 TABLENAME = "DeckLists"
 DECK_SCHEMA = f"""
     CREATE TABLE IF NOT EXISTS {TABLENAME} (
@@ -28,7 +30,7 @@ def getPrevID():
         cur = c.cursor()
         cur.execute(f"SELECT * FROM {TABLENAME}")
         data = cur.fetchall()
-        return (data[-1][0])
+        return data[-1][0]
 
 
 def checkExist(listofcards):
@@ -41,6 +43,43 @@ def checkExist(listofcards):
         if row.empty:
             return False
     return True
+
+
+def returnImageLink(nameList):
+    df = pd.read_csv("./data/CardData.csv")
+    df["Name"] = df["Name"].str.lower()
+    newlist = []
+    for names in nameList:
+        row = df.loc[df["Name"] == names.lower()]
+        newlist.append(row.iloc[0]["Office"])
+    return newlist
+
+
+def deckImgMaker(listk):
+    # print(listk)
+    im1 = Image.open(listk[0])
+    im2 = Image.open(listk[1])
+    im3 = Image.open(listk[2])
+    im4 = Image.open(listk[3])
+    im5 = Image.open(listk[4])
+    im6 = Image.open(listk[5])
+    im7 = Image.open(listk[6])
+    im8 = Image.open(listk[7])
+    im9 = Image.open(listk[8])
+    (width1, height1) = im1.size
+    result_width = width1 * 3
+    result_height = height1 * 3
+    imFinal = Image.new("RGB", (result_width, result_height))
+    imFinal.paste(im=im1, box=(0, 0))
+    imFinal.paste(im=im2, box=(width1, 0))
+    imFinal.paste(im=im3, box=(width1 * 2, 0))
+    imFinal.paste(im=im4, box=(0, height1))
+    imFinal.paste(im=im5, box=(0, height1 * 2))
+    imFinal.paste(im=im6, box=(width1, height1))
+    imFinal.paste(im=im7, box=(width1 * 2, height1))
+    imFinal.paste(im=im8, box=(width1, height1 * 2))
+    imFinal.paste(im=im9, box=(width1 * 2, height1 * 2))
+    return imFinal
 
 
 # arx = "WeebFuck,Boundary of death,Boundary of death,Boundary of death,Boundary of death,Boundary of death,Boundary of death,Boundary of death,Boundary of death,Boundary of death"

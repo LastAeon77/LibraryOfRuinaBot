@@ -1,6 +1,7 @@
 import sqlite3
 from discord.ext import commands
 import discord
+import os
 from utils.deckMakerUtils import (
     TABLENAME,
     DECK_SCHEMA,
@@ -8,6 +9,8 @@ from utils.deckMakerUtils import (
     DECKSPATH,
     getPrevID,
     checkExist,
+    returnImageLink,
+    deckImgMaker,
 )
 
 
@@ -49,11 +52,17 @@ class DeckMake(commands.Cog):
                     """
             embed.description = ans
             embed.color = 3447003
-            return await ctx.send(embed=embed)
+            deckImgLink = returnImageLink(data[3:])
+            finalImg = deckImgMaker(deckImgLink)
+            finalImg.save("tmp/tmp.png")
+            file = discord.File("tmp/tmp.png", filename="image.png")
+            embed.set_image(url="attachment://image.png")
+            return await ctx.send(file=file, embed=embed)
+            os.remove("tmp/tmp.png")
 
     @deck.command()
     async def name(self, ctx, *, arx: str):
-        """Check List of Dec with name"""
+        """Check List of Deck with name"""
         with sqlite3.connect(DECKSPATH) as c:
             cur = c.cursor()
             cur.execute(
@@ -77,7 +86,13 @@ class DeckMake(commands.Cog):
                     """
             embed.description = ans
             embed.color = 3447003
-            return await ctx.send(embed=embed)
+            deckImgLink = returnImageLink(data[3:])
+            finalImg = deckImgMaker(deckImgLink)
+            finalImg.save("tmp/tmp.png")
+            file = discord.File("tmp/tmp.png", filename="image.png")
+            embed.set_image(url="attachment://image.png")
+            return await ctx.send(file=file, embed=embed)
+            os.remove("tmp/tmp.png")
 
     @deck.command()
     async def add(self, ctx, *, arx: str):
