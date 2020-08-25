@@ -57,15 +57,15 @@ def returnImageLink(nameList):
 
 def deckImgMaker(listk):
     # print(listk)
-    im1 = Image.open(listk[0])
-    im2 = Image.open(listk[1])
-    im3 = Image.open(listk[2])
-    im4 = Image.open(listk[3])
-    im5 = Image.open(listk[4])
-    im6 = Image.open(listk[5])
-    im7 = Image.open(listk[6])
-    im8 = Image.open(listk[7])
-    im9 = Image.open(listk[8])
+    im1 = Image.open(listk[0].replace("\\", "/"))
+    im2 = Image.open(listk[1].replace("\\", "/"))
+    im3 = Image.open(listk[2].replace("\\", "/"))
+    im4 = Image.open(listk[3].replace("\\", "/"))
+    im5 = Image.open(listk[4].replace("\\", "/"))
+    im6 = Image.open(listk[5].replace("\\", "/"))
+    im7 = Image.open(listk[6].replace("\\", "/"))
+    im8 = Image.open(listk[7].replace("\\", "/"))
+    im9 = Image.open(listk[8].replace("\\", "/"))
     (width1, height1) = im1.size
     result_width = width1 * 3
     result_height = height1 * 3
@@ -74,15 +74,11 @@ def deckImgMaker(listk):
     imFinal.paste(im=im2, box=(width1, 0))
     imFinal.paste(im=im3, box=(width1 * 2, 0))
     imFinal.paste(im=im4, box=(0, height1))
-    imFinal.paste(im=im5, box=(0, height1 * 2))
-    imFinal.paste(im=im6, box=(width1, height1))
-    imFinal.paste(im=im7, box=(width1 * 2, height1))
+    imFinal.paste(im=im5, box=(width1, height1))
+    imFinal.paste(im=im6, box=(width1*2, height1))
+    imFinal.paste(im=im7, box=(0, height1 * 2))
     imFinal.paste(im=im8, box=(width1, height1 * 2))
     imFinal.paste(im=im9, box=(width1 * 2, height1 * 2))
     return imFinal
 
 
-# arx = "WeebFuck,Boundary of death,Boundary of death,Boundary of death,Boundary of death,Boundary of death,Boundary of death,Boundary of death,Boundary of death,Boundary of death"
-# cardNames = arx.split(",")
-# print(cardNames)
-# print(checkExist(cardNames))

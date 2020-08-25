@@ -2,6 +2,7 @@ import sqlite3
 from discord.ext import commands
 import discord
 import os
+from PIL import Image
 from utils.deckMakerUtils import (
     TABLENAME,
     DECK_SCHEMA,
@@ -67,7 +68,7 @@ class DeckMake(commands.Cog):
             cur = c.cursor()
             cur.execute(
                 f"""SELECT * FROM {TABLENAME}
-                            WHERE deck_name={arx}"""
+                            WHERE deck_name='{arx}'"""
             )
             data = cur.fetchone()
             embed = discord.Embed()
