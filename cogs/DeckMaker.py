@@ -2,7 +2,6 @@ import sqlite3
 from discord.ext import commands
 import discord
 import os
-from PIL import Image
 from utils.deckMakerUtils import (
     TABLENAME,
     DECK_SCHEMA,
@@ -97,7 +96,8 @@ class DeckMake(commands.Cog):
 
     @deck.command()
     async def add(self, ctx, *, arx: str):
-        """This format: deck_name, card #1,card#2,...card#9"""
+        """This format: deck_name, card #1,card#2,...card#9 **NO WHITE SPACE
+         BEFORE OR AFTER COMMA**"""
         cardNames = arx.split(",")
         username = str(ctx.author)
         if len(cardNames) != 10:
@@ -164,6 +164,3 @@ class DeckMake(commands.Cog):
 
 def setup(bot):
     bot.add_cog(DeckMake(bot))
-
-
-"""?deck add Oscar Pierce,High-speed Stabbing,High-speed Stabbing,High-speed Stabbing,High-speed Stabbing,High-speed Stabbing,High-speed Stabbing,High-speed Stabbing,High-speed Stabbing,High-speed Stabbing"""

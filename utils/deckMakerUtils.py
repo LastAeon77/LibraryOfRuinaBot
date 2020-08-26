@@ -75,10 +75,8 @@ def deckImgMaker(listk):
     imFinal.paste(im=im3, box=(width1 * 2, 0))
     imFinal.paste(im=im4, box=(0, height1))
     imFinal.paste(im=im5, box=(width1, height1))
-    imFinal.paste(im=im6, box=(width1*2, height1))
+    imFinal.paste(im=im6, box=(width1 * 2, height1))
     imFinal.paste(im=im7, box=(0, height1 * 2))
     imFinal.paste(im=im8, box=(width1, height1 * 2))
     imFinal.paste(im=im9, box=(width1 * 2, height1 * 2))
     return imFinal
-
-

@@ -19,7 +19,7 @@ class AddCard(commands.Cog):
     @commands.check(owner_check)
     async def addCombatPage(self, ctx, *, arx: str):
         """Enter things in this order: Class(Urban nightmare etc),
-        Office(wedge etc),Id,Chapter,Obtainable,Cost,Name,CardImgLink,
+        Office(wedge etc),Id,Chapter,Obtainable,Cost,Name,CardImgLink(url),
         Score(Not Important),Rarity,On Play Effects,DiceNumber,D1 Type,D1 Roll,
         D1 Effect,
         D2 Type,D2 Roll,D2 Effect,D3 Type,D3 Roll,D3 Effect,D4 Type,D4 Roll,
