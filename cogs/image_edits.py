@@ -36,27 +36,27 @@ class ImageEdits(commands.Cog):
                 frame = []
                 #   36393E is the color of discord background. Gif can't have
                 # transparent background.
-                newImg = Image.new("RGB", (200, 200))
+                newImg = Image.new("RGBA", (200, 200), (0, 0, 0, 0))
                 newImg.paste(output, (20, 40), output)
                 newImg.paste(pat1, (0, 0), pat1)
                 frame.append(newImg)
-                newImg = Image.new("RGB", (200, 200))
+                newImg = Image.new("RGBA", (200, 200), (0, 0, 0, 0))
                 newImg.paste(output, (20, 40), output)
                 newImg.paste(pat2, (0, 0), pat2)
                 frame.append(newImg)
-                newImg = Image.new("RGB", (200, 200))
+                newImg = Image.new("RGBA", (200, 200), (0, 0, 0, 0))
                 newImg.paste(
                     output.resize((133, 118)), (20, 50), output.resize((133, 118))
                 )
                 newImg.paste(pat3, (0, 0), pat3)
                 frame.append(newImg)
-                newImg = Image.new("RGB", (200, 200))
+                newImg = Image.new("RGBA", (200, 200), (0, 0, 0, 0))
                 newImg.paste(
                     output.resize((138, 108)), (20, 60), output.resize((138, 108))
                 )
                 newImg.paste(pat4, (0, 0), pat4)
                 frame.append(newImg)
-                newImg = Image.new("RGB", (200, 200))
+                newImg = Image.new("RGBA", (200, 200), (0, 0, 0, 0))
                 newImg.paste(
                     output.resize((133, 123)), (20, 55), output.resize((133, 123))
                 )
@@ -67,8 +67,10 @@ class ImageEdits(commands.Cog):
                     format="GIF",
                     save_all=True,
                     append_images=frame[1:],
-                    duration=50,
-                    loop=0,
+                    duration=1000,
+                    loop=0
+                    # transparency=255,
+                    # disposal=2
                 )
                 with open("tmp/pat.gif", "rb") as f:
                     await ctx.send(content=None, file=discord.File(f))
