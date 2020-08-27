@@ -49,23 +49,28 @@ def returnImageLink(nameList):
     df = pd.read_csv("./data/CardData.csv")
     df["Name"] = df["Name"].str.lower()
     newlist = []
+    df = df.fillna(0, inplace=True)
     for names in nameList:
         row = df.loc[df["Name"] == names.lower()]
-        newlist.append(row.iloc[0]["Office"])
+        if row.iloc[0]["Office"] != 0:
+            newlist.append(row.iloc[0]["Office"])
+        else:
+            newlist.append("Card/NotAvailable.PNG")
     return newlist
 
 
 def deckImgMaker(listk):
     # print(listk)
-    im1 = Image.open(listk[0].replace("\\", "/"))
-    im2 = Image.open(listk[1].replace("\\", "/"))
-    im3 = Image.open(listk[2].replace("\\", "/"))
-    im4 = Image.open(listk[3].replace("\\", "/"))
-    im5 = Image.open(listk[4].replace("\\", "/"))
-    im6 = Image.open(listk[5].replace("\\", "/"))
-    im7 = Image.open(listk[6].replace("\\", "/"))
-    im8 = Image.open(listk[7].replace("\\", "/"))
-    im9 = Image.open(listk[8].replace("\\", "/"))
+
+    im1 = Image.open(listk[0].replace("\\", "/")).resize((410, 310))
+    im2 = Image.open(listk[1].replace("\\", "/")).resize((410, 310))
+    im3 = Image.open(listk[2].replace("\\", "/")).resize((410, 310))
+    im4 = Image.open(listk[3].replace("\\", "/")).resize((410, 310))
+    im5 = Image.open(listk[4].replace("\\", "/")).resize((410, 310))
+    im6 = Image.open(listk[5].replace("\\", "/")).resize((410, 310))
+    im7 = Image.open(listk[6].replace("\\", "/")).resize((410, 310))
+    im8 = Image.open(listk[7].replace("\\", "/")).resize((410, 310))
+    im9 = Image.open(listk[8].replace("\\", "/")).resize((410, 310))
     (width1, height1) = im1.size
     result_width = width1 * 3
     result_height = height1 * 3
