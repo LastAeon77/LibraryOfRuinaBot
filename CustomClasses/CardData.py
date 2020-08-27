@@ -1,4 +1,5 @@
 import pandas as pd
+
 SEPORATOR = "\n> "
 
 
@@ -42,8 +43,7 @@ class Card:
         for i in range(int(self.diceCount)):
             if (row.iloc[0]["D" + str(i + 1) + " Effect"]) != 0:
                 self.diceEff.append(
-                    str(i + 1) + ": " + (row.iloc[0]["D" + str(i + 1)
-                                         + " Effect"])
+                    str(i + 1) + ": " + (row.iloc[0]["D" + str(i + 1) + " Effect"])
                 )
             else:
                 self.diceEff.append(str(i + 1) + ": ")

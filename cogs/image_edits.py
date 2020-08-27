@@ -67,7 +67,7 @@ class ImageEdits(commands.Cog):
                     format="GIF",
                     save_all=True,
                     append_images=frame[1:],
-                    duration=1000,
+                    duration=50,
                     loop=0
                     # transparency=255,
                     # disposal=2
