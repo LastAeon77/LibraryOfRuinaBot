@@ -204,14 +204,24 @@ Id,Chapter,Obtainable,Cost,Name,Office,Score,Rarity,On Play,DiceNumber,D1 Type,D
 505005,5,TRUE,1,Faith,Card\Urban Nightmare\TheIndex\TheIndex_Faith.png,,Paperback,On use: Restore 1 Light,2,Pierce,3-6,,Slash,2-5,,,,,,,
 505006,5,TRUE,1,Sense Quarry,Card\Urban Nightmare\TheIndex\TheIndex_SenseQuarry.png,,Limited,"If there are 7 or more Cards in Hand, All dice of this card Gains +1 Power",3,Block,2-4,,Block,2-4,,Pierce,2-6,On Hit: Inflict 1 Bind next Scene,,,
 505007,5,TRUE,1,Proselyte's Blade,Card\Urban Nightmare\TheIndex\TheIndex_ProselyteBlade.png,,Hardcover,All dice lose 3 power for this scene,2,Blunt,6-10,,Pierce,5-10,,,,,,,
-506001,5,TRUE,2,Rip Space,Card\Urban Nightmare\WCorp\Warp_Rip_Space.png,,Objet d'art,"Exclusive Combat Page. Use: Spend all charge; has a (Charge x 9)% chance to succeed. 
+506001,5,TRUE,2,Rip Space,Card\Urban Nightmare\WCorp\Warp_Rip_Space.png,,Objet d'art,"Exclusive Combat Page. Use: Spend all charge; has a (Charge x 9.9)% chance to succeed. 
 
-Success: All dice on this page gain +6 power
+Success: All dice on this page gain +8 power
 
-Failure: Deal 20 damage to self",2,Pierce,2-4,,Slash,3-6,"If 10 Charge was spent at once, add +2 Power",,,,,,
-506002,5,TRUE,1,Rewind,Card\Urban Nightmare\WCorp\Warp_Rewind.png,,Paperback,On Use: Gain 3 Charge,3,Evade,1-6,,Block,2-5,,Pierce,2-6,On Hit: Recover 2 HP,,,
-506003,5,TRUE,1,Leap,Card\Urban Nightmare\WCorp\Warp_Leap.png,,Paperback,On Use: Gain 2 Charge and restore 1 Light,2,Slash,2-5,,Blunt,1-7,,,,,,,
-506004,5,TRUE,2,Dimensional Rift,Card\Urban Nightmare\WCorp\Warp_Dimensional_Rift.png,,Hardcover,On Use: Gain 5 Charge,2,Slash,3-8,,Slash,3-7,,,,,,,
-506005,5,TRUE,3,Ripple,Card\Urban Nightmare\WCorp\Warp_Ripple.png,,Limited,On Use: Use 3 Charge to boost Power of all dice on this page by +2,2,Evade,2-5,On Clash Lose: Add +2 Power to the next die,Blunt,4-17,On Hit: Inflict 2 Bind next Scene,,,,,,
-506006,5,TRUE,3,Overcharge,Card\Urban Nightmare\WCorp\Warp_Overcharge.png,,Hardcover,On Use: Gain 9 Charge and become immobilized next scene,4,Pierce,5-13,,Slash,4-12,,Pierce,5-11,,Block,2-6,Counter
-506007,5,TRUE,0,Energy Cycle,Card\Urban Nightmare\WCorp\Warp_Energy_Cycle.png,,Paperback,On Use: Gain 3 Charge,2,Pierce,2-5,,Blunt,2-4,,,,,,,
+Failure: Deal 20 damage to self",2,Pierce,2-4,On Clash Win: Draw 2 Pages,Slash,3-6,"If 10 Charge was spent at once, add +2 Power",,,,,,
+506002,5,TRUE,1,Rewind,Card\Urban Nightmare\WCorp\Warp_Rewind.png,,Paperback,On Use: Gain 4 Charge,3,Evade,1-7,,Block,2-5,,Pierce,2-6,On Hit: Recover 3 HP,,,
+506003,5,TRUE,1,Leap,Card\Urban Nightmare\WCorp\Warp_Leap.png,,Paperback,"On Use: Gain 1 Haste next scene; Use 3 Charge, draw 2 pages",2,Slash,3-7,,Blunt,2-5,,,,,,,
+506004,5,TRUE,2,Dimensional Rift,Card\Urban Nightmare\WCorp\Warp_Dimensional_Rift.png,,Hardcover,On Use: Gain 6 Charge,2,Slash,3-8,,Slash,3-7,,,,,,,
+506005,5,TRUE,3,Ripple,Card\Urban Nightmare\WCorp\Warp_Ripple.png,,Limited,On Use: Use 3 Charge to boost Power of all dice on this page by +3,2,Evade,2-5,On Clash Lose: Add +2 Power to the next die,Blunt,4-17,On Hit: Inflict 2 Bind next Scene,,,,,,
+506006,5,TRUE,3,Overcharge,Card\Urban Nightmare\WCorp\Warp_Overcharge.png,,Hardcover,On Use: Gain 10 Charge and become immobilized next scene,4,Pierce,5-13,,Slash,4-12,,Pierce,5-11,,Block,2-6,Counter
+506007,5,TRUE,0,Energy Cycle,Card\Urban Nightmare\WCorp\Warp_Energy_Cycle.png,,Paperback,On Use: Gain 3 Charge,2,Pierce,2-7,On Hit: Gain 1 Light,Blunt,1-3,,,,,,,
+10000,ShitPost,TRUE,2,Thiccereth Strike,Card/Urban Shitpost/Thiccereth/Thiccereth Strike.png,,PaperBack,On Use: Destroys lolicons,1,Blunt,200-200,,,,,,,,,,
+507001,5,TRUE,2,Flesh Fillet,Card/Urban Nightmare/Smile/Smile_Flesh_Fillet.png,,Hardcover,On Use: Use 3 Somke to boost Power of all dice on this page by +2,2,Slash,3-7,,Slash,3-7,On Hit: Inflict 1 Bleed next Scene per 2 stacks of smoke on target,,,,,,
+507002,5,TRUE,3,Deep Drag,Card/Urban Nightmare/Smile/Smile_Deep_Drag.png,,Limited,Exclusive Page. On Use: Draw 1 Page,2,Blunt,5-18,On HIt: Inflict 2 Smoke next Scene,Evade,1-9,,,,,,,
+507003,5,TRUE,2,Trace of Fumes,Card/Urban Nightmare/Smile/Smile_Trace_of_Fumes.png,,Hardcover,,3,Blunt,3-7,ON Hit: Inflict 1 Smoke next Scene,Blunt,3-7,On Hit: Inflict 2 Smoke next Scene,Block,1-4,,,,
+507004,5,TRUE,1,Hidden Blade,Card/Urban Nightmare/Smile/Smile_Hidden_Blade.png,,Paperback,On Use: Use 3 Smoke to boost Power of all dice on this page by +2,2,Evade,2-9,,Blunt,3-7,On Hit: Use 2 Smoke to inflict 3 Bled next Scene,,,,,,
+507005,5,TRUE,3,Loss of Senses,Card/Urban Nightmare/Smile/Smile_Loss_of_Senses.png,,Hardcover,,3,Block,3-7,,Blunt,4-9,"On Hit: If target has 8 or more Smoke, 
+inflict 2 Paralysis and 1 Feeble",Slash,4-9,"On Hit: If target has 3 or more 
+Smoke, draw 2 pages",,,
+507006,5,TRUE,0,Smoking Pipe,Card/Urban Nightmare/Smile/Smile_Smoking_Pipe.png,,Paperback,On Use: Gain 2 Smoke next Scene. Restore 1 Light,2,Block,2-7,,Evade,1-6,,,,,,,
+507007,5,TRUE,1,Inhale Smoke,Card/Urban Nightmare/Smile/Smile_Inhale_Smoke.png,,Limited,On Use: Gain 3 Smoke next Scene,2,Block,2-8,,Blunt,3-8,On Hit: Gain 4 Smoke next Scene,,,,,,
