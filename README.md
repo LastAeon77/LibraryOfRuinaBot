@@ -40,6 +40,11 @@ The Purpose of this Discord Bot is to ease the discussion of the game __Library 
 ## search: Searches for a Card and will display it's stats
     Example: ?search to overcome crisis
 
+## 2048 game: Play 2048, a legendary game!
+    Example: ?tzfe
+        to start
+    Example: ?tzfe
+        to quit
     
 # Works Cited
     https://thispointer.com/python-how-to-append-a-new-row-to-an-existing-csv-file:~:text=Open%20our%20csv%20file%20in,in%20the%20associated%20csv%20file
