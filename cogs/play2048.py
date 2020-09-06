@@ -62,6 +62,7 @@ class play2048(commands.Cog):
             and (event.emoji.name in ("⬅️", "⬆️", "➡️", "⬇️"))
             and event.message_id == self.sent_msg.id
             and event.user_id != self.bot.user.id
+            and self.player.id == event.user_id
         ):
             self.on_going = datetime.utcnow()
             if event.emoji.name == "⬅️":

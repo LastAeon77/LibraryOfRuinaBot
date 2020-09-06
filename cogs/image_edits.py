@@ -34,43 +34,46 @@ class ImageEdits(commands.Cog):
                 output = ImageOps.fit(avatar, mask.size, centering=(0.5, 0.5))
                 output.putalpha(mask)
                 frame = []
-                #   36393E is the color of discord background. Gif can't have
-                # transparent background.
-                newImg = Image.new("RGBA", (200, 200), (0, 0, 0, 0))
+                newImg = Image.new("RGBA", (200, 200), (124, 0, 0, 0))
                 newImg.paste(output, (20, 40), output)
                 newImg.paste(pat1, (0, 0), pat1)
                 frame.append(newImg)
-                newImg = Image.new("RGBA", (200, 200), (0, 0, 0, 0))
+                newImg
+                newImg = Image.new("RGBA", (200, 200), (124, 0, 0, 0))
                 newImg.paste(output, (20, 40), output)
                 newImg.paste(pat2, (0, 0), pat2)
                 frame.append(newImg)
-                newImg = Image.new("RGBA", (200, 200), (0, 0, 0, 0))
+                newImg
+                newImg = Image.new("RGBA", (200, 200), (124, 0, 0, 0))
                 newImg.paste(
                     output.resize((133, 118)), (20, 50), output.resize((133, 118))
                 )
                 newImg.paste(pat3, (0, 0), pat3)
                 frame.append(newImg)
-                newImg = Image.new("RGBA", (200, 200), (0, 0, 0, 0))
+                newImg
+                newImg = Image.new("RGBA", (200, 200), (124, 0, 0, 0))
                 newImg.paste(
                     output.resize((138, 108)), (20, 60), output.resize((138, 108))
                 )
                 newImg.paste(pat4, (0, 0), pat4)
                 frame.append(newImg)
-                newImg = Image.new("RGBA", (200, 200), (0, 0, 0, 0))
+                newImg
+                newImg = Image.new("RGBA", (200, 200), (124, 0, 0, 0))
                 newImg.paste(
                     output.resize((133, 123)), (20, 55), output.resize((133, 123))
                 )
                 newImg.paste(pat5, (0, 0), pat5)
                 frame.append(newImg)
+                newImg
                 frame[0].save(
                     "tmp/pat.gif",
                     format="GIF",
                     save_all=True,
                     append_images=frame[1:],
-                    duration=50,
-                    loop=0
-                    # transparency=255,
-                    # disposal=2
+                    duration=20,
+                    loop=0,
+                    transparency=0,
+                    disposal=2
                 )
                 with open("tmp/pat.gif", "rb") as f:
                     await ctx.send(content=None, file=discord.File(f))

@@ -225,3 +225,11 @@ inflict 2 Paralysis and 1 Feeble",Slash,4-9,"On Hit: If target has 3 or more
 Smoke, draw 2 pages",,,
 507006,5,TRUE,0,Smoking Pipe,Card/Urban Nightmare/Smile/Smile_Smoking_Pipe.png,,Paperback,On Use: Gain 2 Smoke next Scene. Restore 1 Light,2,Block,2-7,,Evade,1-6,,,,,,,
 507007,5,TRUE,1,Inhale Smoke,Card/Urban Nightmare/Smile/Smile_Inhale_Smoke.png,,Limited,On Use: Gain 3 Smoke next Scene,2,Block,2-8,,Blunt,3-8,On Hit: Gain 4 Smoke next Scene,,,,,,
+1200000,X,TRUE,4,Regret EGO,Card/EGO/Technology/Regret.png,,EGO,,3,Blunt,6-8,On Hit: Deal Stagger Damage equal to 10% of the target's current Stagger Resist,Blunt,6-8,On Hit: Deal Stagger Damage equal to 10% of the target's current Stagger Resist,Blunt,9-19,On Hit: Deal Stagger Damage equal to 50% of the target's current Stagger Resist,,,
+1200001,X,TRUE,6,Grinder Mk52,Card/EGO/Technology/Grinder Mk52.png,,EGO,Mass Attack,3,Slash,2-7,Individual; On Hit Inflict 2 Bleed next Scene,Slash,3-9,Individual; On Hit Inflict 2 Bleed next Scene,Slash,4-11,Individual; On Hit Inflict 2 Bleed next Scene,,,
+1200002,X,TRUE,5,Harmony,Card/EGO/Technology/Harmony.png,,EGO,"Upon each successful hit, a random ally takes 3 stagger damage and gains 1 Strength next Scene. 
+Upon defeating an enemy, all allies gain 2 Strength",3,Pierce,4-7,On Hit: Recycle this die until it rolls the minimum value (up to 2 times),Pierce,3-6,On Hit: Recycle this die until it rolls the minimum value (Up to 2 times),Slash,4-8,,,,
+1200003,X,TRUE,4,Solemn Lament,Card/EGO/Technology/Solemn Lament.png,,EGO,Each die on this page is rolled 8 times,1,Blunt (Ranged),1-6,On Hit: Deal either 3 damage or 3 stagger damage to target,,,,,,,,,
+1200004,X,TRUE,9,Magic Bullet,Card/EGO/Technology/Magic Bullet.png,,EGO,Synchronize on equip,1,Pierce,1-1,,,,,,,,,,
+507000,5,TRUE,4,Blazing Strike -p,Card\Urban Plague\Wedge\Wedge7.png,,Objet d'art,Exclusive Page; Can only be used on emotion 3 and above,1,Blunt,9-24,On Hit: Inflict 10 Burn,,,,,,,,,
+507001,5,TRUE,2,Fierce Charge -p,Card\Urban Plague\Wedge\Wedge9.png,,Paperback,,1,Slash,5-12,On Hit: Inflict 3 Burn,,,,,,,,,

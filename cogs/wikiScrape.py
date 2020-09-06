@@ -7,7 +7,7 @@ import pandas as pd
 
 class LibraryScrape:
     def __init__(self, searchTerm):
-        df = pd.read_csv("cogs/wiki.csv")
+        df = pd.read_csv("./data/wiki.csv")
         row = df.loc[df["SearchTerms"].str.lower() == searchTerm.lower()]
         self.searchType = row.iloc[0]["Type"]
         self.link = "https://library-of-ruina.fandom.com/wiki/" + searchTerm

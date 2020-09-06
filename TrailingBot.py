@@ -1,6 +1,7 @@
 import discord
 from discord.ext import commands
 import json
+import random
 
 # wikipedia
 # import pandas as pd
@@ -53,6 +54,16 @@ async def on_ready():
     print(bot.user.name)
     print(bot.user.id)
     print("------")
+
+
+@bot.command()
+async def bestGirl(ctx, arx: str, arx2: str):
+    """Tells who best girl is"""
+    random.seed()
+    if random.randint(1, 100) < 50:
+        await ctx.send(arx)
+    else:
+        await ctx.send(arx2)
 
 
 @bot.command()
