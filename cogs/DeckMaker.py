@@ -67,7 +67,7 @@ class DeckMake(commands.Cog):
             cur = c.cursor()
             cur.execute(
                 f"""SELECT * FROM {TABLENAME}
-                            WHERE deck_name='{arx}'"""
+                            WHERE deck_name LIKE '{arx}'"""
             )
             data = cur.fetchone()
             embed = discord.Embed()

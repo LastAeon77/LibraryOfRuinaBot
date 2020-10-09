@@ -12,6 +12,16 @@ The Purpose of this Discord Bot is to ease the discussion of the game __Library 
     import aiohttp
     import aiofiles
 
+# Make json file for access token.
+
+    Make resources/settings.json file and copy the folowing in:
+
+    {
+    "discord": {
+        "owner": "",
+        "token": "InsertTokenHere"
+    }
+    }
 # Commands
     
 
