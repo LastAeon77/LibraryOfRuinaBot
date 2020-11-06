@@ -67,6 +67,14 @@ async def bestGirl(ctx, arx: str, arx2: str):
 
 
 @bot.command()
+async def update(ctx):
+    """Tells who best girl is"""
+    random.seed()
+    ans = random.randint(1, 10)
+    await ctx.send(f"Project moon will update in {ans} hours")
+
+
+@bot.command()
 async def add(ctx, left: int, right: int):
     """Adds two numbers together."""
     await ctx.send(left + right)
