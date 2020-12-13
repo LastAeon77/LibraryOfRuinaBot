@@ -62,6 +62,51 @@ class searchCard(commands.Cog):
             await ctx.send(embed=mewembed)
 
     @commands.command()
+    async def search(self, ctx, *, arx: str):
+        soup = await get_site_content(f"{LINK}/lor/card/")
+        soup = soup.find_all("li")
+        list_of_card = []
+        found = False
+        for cards in soup:
+            if str(arx).lower() == cards.get_text().lower():
+                link = cards.find("a").get("href")
+                found = True
+                link = f"{LINK}{link}"
+                temp_soup = await get_site_content(link)
+                kek = temp_soup.find_all("img")[1].get("src")
+                kek = kek.replace(" ", "%20")
+                img = f"http://aeonmoon.herokuapp.com{kek}"
+                tables = pd.read_html(link)
+                datas = make_into_string(tables)
+                embed = discord.Embed()
+                embed.color = 3066993
+                embed.set_author(name=str(arx))
+                embed.description = datas[0]
+                embed.add_field(name="Dice Rolls", value=datas[1], inline=True)
+                embed.add_field(name="Dice Effects", value=datas[2], inline=True)
+                embed.add_field(name="Dice Type", value=datas[3], inline=True)
+                embed.set_image(url=img)
+                embed.add_field(
+                    name="Visit this card's website",
+                    value=link,
+                    inline=False,
+                )
+
+                await ctx.send(embed=embed)
+            elif str(arx).lower()[0] == cards.get_text().lower()[0]:
+                list_of_card.append(cards.get_text().lower())
+
+        if not found:
+            mewembed = discord.Embed()
+            mewembed.color = 3066993
+            mewembed.set_author(name=f"We couldn't find {str(arx)}, Did you mean: \n")
+            stuff = ""
+            for cards in list_of_card:
+                stuff += f"{cards}\n"
+            mewembed.description = stuff
+            await ctx.send(embed=mewembed)
+
+    @commands.command()
     async def sdeck(self, ctx, arx: int):
         soup = await get_site_content(f"{LINK}/lor/deck/{arx}")
         name = soup.find("h1")

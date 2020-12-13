@@ -20,31 +20,31 @@ with open("resources/settings.json", "r") as f:
 
 
 # bot = commands.Bot(command_prefix='?')
-@bot.command()
-async def search(ctx, *, arx: str):
-    """Searches for card in the library"""
-    name = arx
+# @bot.command()
+# async def search(ctx, *, arx: str):
+#     """Searches for card in the library"""
+#     name = arx
 
-    try:
-        CardTemp = Card(name)
-        embed = discord.Embed()
-        embed.color = 3066993
-        embed.set_author(name=str(arx))
-        embed.description = CardTemp.toString()
-        embed.add_field(name="Dice Rolls", value=CardTemp.diceDmgStr, inline=True)
-        embed.add_field(name="Dice Effects", value=CardTemp.diceEffStr, inline=True)
-        embed.add_field(name="Dice Type", value=CardTemp.diceTypeStr, inline=True)
-        file = discord.File(CardTemp.imageLink, filename="image.png", spoiler=True)
-        embed.set_image(url="attachment://image.png")
-        await ctx.send(file=file, embed=embed)
+#     try:
+#         CardTemp = Card(name)
+#         embed = discord.Embed()
+#         embed.color = 3066993
+#         embed.set_author(name=str(arx))
+#         embed.description = CardTemp.toString()
+#         embed.add_field(name="Dice Rolls", value=CardTemp.diceDmgStr, inline=True)
+#         embed.add_field(name="Dice Effects", value=CardTemp.diceEffStr, inline=True)
+#         embed.add_field(name="Dice Type", value=CardTemp.diceTypeStr, inline=True)
+#         file = discord.File(CardTemp.imageLink, filename="image.png", spoiler=True)
+#         embed.set_image(url="attachment://image.png")
+#         await ctx.send(file=file, embed=embed)
 
-    except:
-        Others = OtherOptions(name)
-        mewembed = discord.Embed()
-        mewembed.color = 3066993
-        mewembed.set_author(name=f"We couldn't find {str(arx)}, Did you mean: \n")
-        mewembed.description = Others.toString()
-        await ctx.send(embed=mewembed)
+#     except:
+#         Others = OtherOptions(name)
+#         mewembed = discord.Embed()
+#         mewembed.color = 3066993
+#         mewembed.set_author(name=f"We couldn't find {str(arx)}, Did you mean: \n")
+#         mewembed.description = Others.toString()
+#         await ctx.send(embed=mewembed)
 
 
 @bot.event
