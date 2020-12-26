@@ -4,7 +4,7 @@ from utils.cardScrape import (
     get_site_content,
     make_into_string,
     scrape_deck_image,
-    get_image_content,
+    get_site_content_json,
 )
 import pandas as pd
 import os
@@ -83,8 +83,8 @@ class searchCard(commands.Cog):
                 embed.set_author(name=str(arx))
                 embed.description = datas[0]
                 embed.add_field(name="Dice Rolls", value=datas[1], inline=True)
-                embed.add_field(name="Dice Effects", value=datas[2], inline=True)
-                embed.add_field(name="Dice Type", value=datas[3], inline=True)
+                embed.add_field(name="Dice Type", value=datas[2], inline=True)
+                embed.add_field(name="Dice Effects", value=datas[3], inline=True)
                 embed.set_image(url=img)
                 embed.add_field(
                     name="Visit this card's website",
@@ -108,40 +108,47 @@ class searchCard(commands.Cog):
 
     @commands.command()
     async def sdeck(self, ctx, arx: int):
-        soup = await get_site_content(f"{LINK}/lor/deck/{arx}")
-        name = soup.find("h1")
-        ps = soup.find_all("p")
-        creator = ps[0].get_text()
-        avg_cost = ps[1].get_text()
-        recc_floor = ps[2].get_text()
-        recc_page = ps[3].get_text()
+        soup = await get_site_content_json(f"{LINK}/lor/api/deck/{arx}?format=json")
+        name = soup["name"]
+        creator = soup["creator"]
+        recc_floor = soup["Recc_Floor"]
+        recc_page = soup["Recc_Page"]
+        recc_rank = soup["Recc_Rank"]
         general_info_str = f"""
-        > {creator}
-        > {avg_cost}
-        > {recc_floor}
-        > {recc_page}
+        > Creator: {creator}
+        > Recommended Floor: {recc_floor}
+        > Recommended Page: {recc_page}
+        > Recommended Rank: {recc_rank}
         > Make Your deck: http://aeonmoon.herokuapp.com/lor/deck/add/"""
-        eff = soup.find_all("li", {"class": "has-text-primary"})
+        eff = soup["effect"]
         effstr = ""
         for effs in eff:
-            effstr += f"> {effs.get_text().split(':')[0]}\n"
-        cards = soup.find_all("li", {"class": ""})
+            effstr += f"> {effs}\n"
         cardstr = ""
-        for card in cards:
-            cardstr += f"> {card.get_text()}\n"
-        imgs = soup.find_all("img")
-        imgs = imgs[1:]
+
+        for card in soup["card_count"]:
+            cardstr += f"> {card['card_id']} x{card['card_count']}\n"
         list_of_img = []
-        for img in imgs:
-            kek = img.get("src")
+        list_of_name = []
+        cards = soup["cards"]
+        for img in cards:
+            kek = img["ImgPath"]
+            list_of_name.append(img["Name"])
             kek = kek.replace(" ", "%20")
-            list_of_img.append(f"http://aeonmoon.herokuapp.com{kek}")
-        finalImg = await scrape_deck_image(list_of_img)
+            list_of_img.append(f"http://aeonmoon.herokuapp.com/static/{kek}")
+
+        true_list_img = []
+        for imglink, name in zip(list_of_img, list_of_name):
+            for shits in soup["card_count"]:
+                if name == shits["card_id"]:
+                    for i in range(shits["card_count"]):
+                        true_list_img.append(imglink)
+        finalImg = await scrape_deck_image(true_list_img)
         finalImg.save("tmp/tmp.png")
         file = discord.File("tmp/tmp.png", filename="image.png")
         embed = discord.Embed()
         embed.color = 3447003
-        embed.set_author(name=name.get_text())
+        embed.set_author(name=name)
         embed.description = general_info_str
         if effstr != "":
             embed.add_field(name="Page Effects", value=effstr)

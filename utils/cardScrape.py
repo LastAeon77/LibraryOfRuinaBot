@@ -1,7 +1,6 @@
 import aiohttp
 from bs4 import BeautifulSoup
 from PIL import Image
-import requests
 from io import BytesIO
 
 # import pandas as pd
@@ -13,6 +12,13 @@ async def get_site_content(currUrl):
             page = await resp.read()
     soup = BeautifulSoup(page, "lxml")
     return soup
+
+
+async def get_site_content_json(currUrl):
+    async with aiohttp.ClientSession() as session:
+        async with session.get(currUrl) as resp:
+            page = await resp.json()
+    return page
 
 
 async def get_image_content(currUrl):
