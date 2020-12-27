@@ -109,7 +109,7 @@ class searchCard(commands.Cog):
     @commands.command()
     async def sdeck(self, ctx, arx: int):
         soup = await get_site_content_json(f"{LINK}/lor/api/deck/{arx}?format=json")
-        name = soup["name"]
+        name_of_deck = soup["name"]
         creator = soup["creator"]
         recc_floor = soup["Recc_Floor"]
         recc_page = soup["Recc_Page"]
@@ -148,7 +148,7 @@ class searchCard(commands.Cog):
         file = discord.File("tmp/tmp.png", filename="image.png")
         embed = discord.Embed()
         embed.color = 3447003
-        embed.set_author(name=name)
+        embed.set_author(name=name_of_deck)
         embed.description = general_info_str
         if effstr != "":
             embed.add_field(name="Page Effects", value=effstr)
