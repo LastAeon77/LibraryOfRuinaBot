@@ -158,6 +158,57 @@ class searchCard(commands.Cog):
         return await ctx.send(file=file, embed=embed)
         os.remove("tmp/tmp.png")
 
+    @commands.command()
+    async def abno(self, ctx, *, search: str):
+        abnos = await get_site_content_json(
+            "http://aeonmoon.herokuapp.com/lor/api/abno/?format=json"
+        )
+        list_of_name = []
+        exists = False
+        for abno in abnos:
+            if abno["name"].lower() == search.lower():
+                true_abno = abno
+                exists = True
+                break
+            if abno["name"].lower()[:1] == search.lower()[:1]:
+                list_of_name.append(abno["name"])
+        if exists:
+            id_of_abno = true_abno["id"]
+            name = true_abno["name"]
+            effect = true_abno["effects"]
+            description = true_abno["description"]
+            emotion_type = true_abno["emotion_type"]
+            if emotion_type == "BD":
+                emotion_type = "Breakdown"
+            else:
+                emotion_type = "Awakening"
+            emotion_level = true_abno["emotion_level"]
+            office = true_abno["Office"]
+            general_info_str = f"""
+            > Emotion Type: {emotion_type}
+            > Emotion Level: {emotion_level}
+            > Floor: {office}
+            """
+            embed = discord.Embed()
+            embed.color = 3447003
+            embed.set_author(name=name)
+            embed.description = general_info_str
+            embed.add_field(name="Description", value=description)
+            embed.add_field(name="Effect", value=effect)
+            embed.set_footer(text=f"{LINK}/lor/abno/{id_of_abno}")
+            ImgPath = true_abno["ImgPath"]
+            ImgPath = ImgPath.replace(" ", "%20")
+            embed.set_image(url=f"{LINK}/static/{ImgPath}")
+            return await ctx.send(embed=embed)
+        else:
+            embed = discord.Embed()
+            embed.set_author(name="We could not find this abno page, did you mean:")
+            str_of_names = ""
+            for names in list_of_name:
+                str_of_names += f"> {names}\n"
+            embed.description = str_of_names
+            return await ctx.send(embed=embed)
+
 
 def setup(bot):
     bot.add_cog(searchCard(bot))
