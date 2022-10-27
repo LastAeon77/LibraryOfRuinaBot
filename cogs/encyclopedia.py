@@ -52,7 +52,7 @@ class Encyclopedia(commands.Cog):
         await ctx.send(embed=embed)
 
     async def cutout(self, seq, idx):
-        return seq[:idx] + seq[idx + 1:]
+        return seq[:idx] + seq[idx + 1 :]
 
     @pedia.command()
     async def catalogue(self, ctx, arx: int):
@@ -89,5 +89,5 @@ class Encyclopedia(commands.Cog):
         await ctx.send(embed=embed)
 
 
-def setup(bot):
-    bot.add_cog(Encyclopedia(bot))
+async def setup(bot):
+    await bot.add_cog(Encyclopedia(bot))

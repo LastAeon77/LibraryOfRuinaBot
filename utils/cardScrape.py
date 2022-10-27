@@ -14,6 +14,12 @@ async def get_site_content(currUrl):
     return soup
 
 
+async def get_site_request(currUrl):
+    async with aiohttp.ClientSession() as session:
+        async with session.get(currUrl) as resp:
+            return await resp.read()
+
+
 async def get_site_content_json(currUrl):
     async with aiohttp.ClientSession() as session:
         async with session.get(currUrl) as resp:
@@ -50,18 +56,21 @@ def make_into_string(df):
     > {DmgRolls['Damage Rolls'][1]}
     > {DmgRolls['Damage Rolls'][2]}
     > {DmgRolls['Damage Rolls'][3]}
+    > {DmgRolls['Damage Rolls'][4]}
     """
     Types = f"""
     > {DmgRolls['Type'][0]}
     > {DmgRolls['Type'][1]}
     > {DmgRolls['Type'][2]}
     > {DmgRolls['Type'][3]}
+    > {DmgRolls['Type'][4]}
     """
     Effects = f"""
     > {DmgRolls['Dice Effect'][0]}
     > {DmgRolls['Dice Effect'][1]}
     > {DmgRolls['Dice Effect'][2]}
     > {DmgRolls['Dice Effect'][3]}
+    > {DmgRolls['Dice Effect'][4]}
     """
 
     return [RairtyAndStuff, Dmg, Types, Effects]

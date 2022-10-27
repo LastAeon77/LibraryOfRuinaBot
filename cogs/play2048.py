@@ -134,11 +134,13 @@ class play2048(commands.Cog):
     async def timer(self):
         while self.on_going:
             time_left = (datetime.utcnow() - self.on_going).total_seconds()
-            if(time_left > 120):
-                await self.sent_msg.channel.send(f"@{str(self.player)} gone for 2 mins. Clearing.")
+            if time_left > 120:
+                await self.sent_msg.channel.send(
+                    f"@{str(self.player)} gone for 2 mins. Clearing."
+                )
                 await self.quit_game()
             await asyncio.sleep(2)
 
 
-def setup(bot):
-    bot.add_cog(play2048(bot))
+async def setup(bot):
+    await bot.add_cog(play2048(bot))

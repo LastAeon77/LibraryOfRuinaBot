@@ -2,57 +2,29 @@ import discord
 from discord.ext import commands
 import json
 import random
-
-# wikipedia
-# import pandas as pd
-
-from CustomClasses.CardData import Card
-
-# from CustomClasses.GuildAndToken import TOKEN
-# from CustomClasses.GuildAndToken import GUILD
-from CustomClasses.OtherOptions import OtherOptions
-
 import os
+import logging
+import asyncio
+from discord import app_commands
 
-bot = commands.Bot(command_prefix=commands.when_mentioned_or("?"))
+intents = discord.Intents.all()
+intents.members = True
+bot = commands.Bot(command_prefix=commands.when_mentioned_or("?"), intents=intents)
+# bot.synced = False
+
 with open("resources/settings.json", "r") as f:
     bot.config = json.load(f)
 
-
-# bot = commands.Bot(command_prefix='?')
-# @bot.command()
-# async def search(ctx, *, arx: str):
-#     """Searches for card in the library"""
-#     name = arx
-
-#     try:
-#         CardTemp = Card(name)
-#         embed = discord.Embed()
-#         embed.color = 3066993
-#         embed.set_author(name=str(arx))
-#         embed.description = CardTemp.toString()
-#         embed.add_field(name="Dice Rolls", value=CardTemp.diceDmgStr, inline=True)
-#         embed.add_field(name="Dice Effects", value=CardTemp.diceEffStr, inline=True)
-#         embed.add_field(name="Dice Type", value=CardTemp.diceTypeStr, inline=True)
-#         file = discord.File(CardTemp.imageLink, filename="image.png", spoiler=True)
-#         embed.set_image(url="attachment://image.png")
-#         await ctx.send(file=file, embed=embed)
-
-#     except:
-#         Others = OtherOptions(name)
-#         mewembed = discord.Embed()
-#         mewembed.color = 3066993
-#         mewembed.set_author(name=f"We couldn't find {str(arx)}, Did you mean: \n")
-#         mewembed.description = Others.toString()
-#         await ctx.send(embed=mewembed)
+bot.UPDATE_NOTICE = ""
 
 
 @bot.event
 async def on_ready():
     """Tells owner that bot is ready"""
+    await bot.tree.sync()
+    # 718294958573879347
     print("Logged in as")
     print(bot.user.name)
-    print(bot.user.id)
     print("------")
 
 
@@ -67,11 +39,39 @@ async def bestGirl(ctx, arx: str, arx2: str):
 
 
 @bot.command()
+async def update_update(ctx, *, arx: str):
+    if ctx.message.author.id == bot.config["discord"]["owner"]:
+        bot.UPDATE_NOTICE = arx
+        await ctx.send(f"The message has been updated to {arx}")
+    else:
+        await ctx.send("You are not allowed to use this command")
+
+
+@bot.command()
 async def update(ctx):
-    """Tells who best girl is"""
-    random.seed()
-    ans = random.randint(1, 10)
-    await ctx.send(f"Project moon will update in {ans} hours")
+
+    await ctx.send(bot.UPDATE_NOTICE)
+
+
+@bot.command()
+async def num(ctx):
+    await ctx.send(f"in {len(bot.guilds)} servs")
+
+
+@bot.command()
+async def damnyouPM(ctx):
+    await ctx.send("https://imgur.com/wAHRx0q")
+
+
+@bot.command()
+async def faith(ctx):
+    await ctx.send("Have Faith")
+    await ctx.send("https://i.imgur.com/hafVVUO.png")
+
+
+@bot.command()
+async def geb(ctx):
+    await ctx.send("https://i.imgur.com/4f6kLyt.png")
 
 
 @bot.command()
@@ -80,13 +80,34 @@ async def add(ctx, left: int, right: int):
     await ctx.send(left + right)
 
 
-if __name__ == "__main__":  # check if in main
-    for file in os.listdir("cogs"):
-        if file.endswith(".py"):
-            try:
-                bot.load_extension("cogs." + os.path.splitext(file)[0])
-                print(f"Extension {file} loaded.")
-            except Exception as e:
-                print(f"Failed to load extension {file}: {e}")
+@bot.command()
+async def hhpp(ctx):
+    """Gives link to HamhamPangPang Registration"""
+    await ctx.send(
+        r"https://m.place.naver.com/restaurant/1873966909/booking?query=%ED%96%84%ED%96%84%ED%8C%A1%ED%8C%A1"
+    )
 
-    bot.run(bot.config["discord"]["token"])
+
+async def main():
+    async with bot:
+        for file in os.listdir("cogs"):
+            if file.endswith(".py"):
+                try:
+                    await bot.load_extension("cogs." + os.path.splitext(file)[0])
+                    print(f"Extension {file} loaded.")
+                except Exception as e:
+                    print(f"Failed to load extension {file}: {e}")
+        logger = logging.getLogger("discord")
+        logger.setLevel(logging.DEBUG)
+        handler = logging.FileHandler(
+            filename="data/discord.log", encoding="utf-8", mode="w"
+        )
+        handler.setFormatter(
+            logging.Formatter("%(asctime)s:%(levelname)s:%(name)s: %(message)s")
+        )
+        logger.addHandler(handler)
+        # bot.run(bot.config["discord"]["token"])
+        await bot.start(bot.config["discord"]["token"])
+
+
+asyncio.run(main())
