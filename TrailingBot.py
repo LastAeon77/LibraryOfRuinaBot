@@ -4,6 +4,7 @@ import json
 import random
 import os
 import logging
+from logging.handlers import RotatingFileHandler
 import asyncio
 from discord import app_commands
 
@@ -97,10 +98,15 @@ async def main():
                     print(f"Extension {file} loaded.")
                 except Exception as e:
                     print(f"Failed to load extension {file}: {e}")
+        # eating too much space so I stop using logging.
         logger = logging.getLogger("discord")
         logger.setLevel(logging.DEBUG)
-        handler = logging.FileHandler(
-            filename="data/discord.log", encoding="utf-8", mode="w"
+        handler = RotatingFileHandler(
+            filename="data/discord.log",
+            encoding="utf-8",
+            mode="a",
+            maxBytes=5 * 1024 * 1024,
+            backupCount=2,
         )
         handler.setFormatter(
             logging.Formatter("%(asctime)s:%(levelname)s:%(name)s: %(message)s")

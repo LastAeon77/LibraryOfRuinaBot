@@ -35,7 +35,7 @@ class Limbus(commands.Cog):
         embed.set_author(name="ProjectMoon Limbus Follower Total")
         embed.description = f"""
         Youtube Subscribers: {youtube_sub}
-        Limbus Twitter Followers: {twitter_count}
+        Limbus Twitter Followers: {twitter_count} (API no longer available)
         Total: {total}
         """
         with open(FILE_NAME_TWITTER, "a") as f:
@@ -45,26 +45,24 @@ class Limbus(commands.Cog):
         with open(FILE_NAME_TIME, "a") as f:
             f.write(f"\n{datetime.now()}")
         await ctx.send(embed=embed)
-        if self.below_150000 and total >= 150000:
-            self.below_150000 = False
-            await ctx.send("BLADE LINEAGE YI SANG IS HERE")
-            await ctx.send("LIMBUS IS REAL")
-            await ctx.send("JIHOON IS GOD")
+
 
         return [int(twitter_count), int(youtube_sub)]
 
     async def get_twitter_user(self):
-        consumer_key = self.bot.config["twitter"]["API key"]
-        consumer_secret = self.bot.config["twitter"]["API secret key"]
-        access_token = self.bot.config["twitter"]["Access-token"]
-        access_token_secret = self.bot.config["twitter"]["Access-Secret-Token"]
-        auth = tweepy.OAuth1UserHandler(
-            consumer_key, consumer_secret, access_token, access_token_secret
-        )
-        api = tweepy.API(auth)
-        twitter_user_count = api.get_user(screen_name="LimbusCompany_B")
-        twitter_user_count = twitter_user_count.followers_count
-        return int(twitter_user_count)
+        # consumer_key = self.bot.config["twitter"]["API key"]
+        # consumer_secret = self.bot.config["twitter"]["API secret key"]
+        # access_token = self.bot.config["twitter"]["Access-token"]
+        # access_token_secret = self.bot.config["twitter"]["Access-Secret-Token"]
+        # auth = tweepy.OAuth1UserHandler(
+        #     consumer_key, consumer_secret, access_token, access_token_secret
+        # )
+        # api = tweepy.API(auth)
+        # twitter_user_count = api.get_user(screen_name="LimbusCompany_B")
+        # twitter_user_count = twitter_user_count.followers_count
+        # return int(twitter_user_count)
+        # due to new twitter policy of destroying API
+        return 0
 
     async def get_youtube_sub(self):
         youtube_API_key = self.bot.config["youtube"]["API key"]
