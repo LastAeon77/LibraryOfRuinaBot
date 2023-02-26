@@ -1,13 +1,18 @@
 from discord.ext import commands, tasks
 import discord
-from datetime import datetime, timedelta
-import tweepy
+from datetime import datetime
+from rapidfuzz import fuzz, process
+
+# import tweepy
 from googleapiclient.discovery import build
 import matplotlib.pyplot as plt
 import matplotlib.dates
-
+from utils.cardScrape import (
+    get_site_content_json,
+)
 
 LINK_LIMBUS_TWITTER = "https://socialblade.com/twitter/user/liberarelimbus"
+LINK = "https://malcute.aeonmoon.page"
 
 YOUTUBE_USERNAME = "ProjectMoonOfficial"
 
@@ -15,6 +20,19 @@ FILE_NAME_TWITTER = "./data/twitter_count.txt"
 FILE_NAME_YOUTUBE = "./data/youtube_count.txt"
 FILE_NAME_TIME = "./data/time_stamp.txt"
 IMAGE_LOCATION = "data/follower_graph.png"
+
+
+class DeleteEmbedView(discord.ui.View):
+    def __init__(self, author, message=None):
+        super().__init__()
+        self.author = author
+        self.message = message
+
+    @discord.ui.button(label="Delete", style=discord.ButtonStyle.red)
+    async def delete(self, interaction: discord.Interaction, button: discord.ui.Button):
+
+        if interaction.user == self.author:
+            await interaction.message.delete()
 
 
 class Limbus(commands.Cog):
@@ -45,7 +63,6 @@ class Limbus(commands.Cog):
         with open(FILE_NAME_TIME, "a") as f:
             f.write(f"\n{datetime.now()}")
         await ctx.send(embed=embed)
-
 
         return [int(twitter_count), int(youtube_sub)]
 
@@ -207,6 +224,97 @@ class Limbus(commands.Cog):
             await self.growth(ctx, float(arx2))
         else:
             await ctx.send("Error")
+
+    @commands.hybrid_command()
+    async def identity(self, ctx, arx: str):
+        message = await ctx.send("Loading...")
+        soup = await get_site_content_json(f"{LINK}/api/limbus/identity")
+        choices = []
+        for x in soup:
+            choices.append(x["name"].lower())
+        best_match = process.extractOne(arx.lower(), choices, scorer=fuzz.ratio)
+        best_match = best_match[0]
+        true_identity = [x for x in soup if x["name"].lower() == best_match]
+        true_identity = true_identity[0]
+
+        embed = discord.Embed()
+        embed.set_author(name=true_identity["name"])
+        embed.add_field(
+            name="Rarity",
+            value=("".join(["0" for i in range(true_identity["rarity"])])),
+        )
+        embed.add_field(name="Sinner", value=true_identity["sinner"])
+        embed.add_field(
+            name="Passive on Field", value=true_identity["passive_on_field"]
+        )
+        embed.add_field(
+            name="Passive off Field", value=true_identity["passive_off_field"]
+        )
+        embed.add_field(name="Skills", value=true_identity["skills"])
+        embed.add_field(name="Resist Wrath", value=true_identity["resistance_wrath"])
+        embed.add_field(name="Resist Lust", value=true_identity["resistance_lust"])
+        embed.add_field(name="Resist Sloth", value=true_identity["resistance_sloth"])
+        embed.add_field(
+            name="Resist Gluttony", value=true_identity["resistance_gluttony"]
+        )
+        embed.add_field(name="Resist Gloom", value=true_identity["resistance_gloom"])
+        embed.add_field(name="Resist Pride", value=true_identity["resistance_pride"])
+        embed.add_field(name="Resist Pride", value=true_identity["resistance_envy"])
+        embed.add_field(name="Resist Slash", value=true_identity["resistance_slash"])
+        embed.add_field(name="Resist Pierce", value=true_identity["resistance_pierce"])
+        embed.add_field(name="Resist Blunt", value=true_identity["resistance_blunt"])
+        delete_button = DeleteEmbedView(author=ctx.author, message=message)
+        await message.edit(
+            content="",
+            embed=embed,
+            view=delete_button,
+        )
+
+    @commands.hybrid_command()
+    async def ego(self, ctx, arx: str):
+        message = await ctx.send("Loading...")
+        soup = await get_site_content_json(f"{LINK}/api/limbus/ego")
+        idenity_data = [x for x in soup if str(x["name"]).lower() == str(arx).lower()]
+        if not idenity_data:
+            choices = []
+            for x in soup:
+                choices.append(x["name"].lower())
+            best_match = process.extractOne(arx.lower(), choices, scorer=fuzz.ratio)
+            best_match = best_match[0]
+            true_identity = [x for x in idenity_data if x["name"].lower() == best_match]
+            true_identity = true_identity[0]
+        embed = discord.Embed()
+        embed.set_author(name=true_identity["name"])
+        embed.add_field(
+            name="Rarity",
+            value=("".join(["0" for i in range(true_identity["rarity"])])),
+        )
+        embed.add_field(name="Sinner", value=true_identity["sinner"])
+        embed.add_field(
+            name="Passive on Field", value=true_identity["passive_on_field"]
+        )
+        # embed.add_field(
+        #     name="Passive off Field", value=true_identity["passive_off_field"]
+        # )
+        embed.add_field(name="Skills", value=true_identity["skills"])
+        embed.add_field(name="Resist Wrath", value=true_identity["resistance_wrath"])
+        embed.add_field(name="Resist Lust", value=true_identity["resistance_lust"])
+        embed.add_field(name="Resist Sloth", value=true_identity["resistance_sloth"])
+        embed.add_field(
+            name="Resist Gluttony", value=true_identity["resistance_gluttony"]
+        )
+        embed.add_field(name="Resist Gloom", value=true_identity["resistance_gloom"])
+        embed.add_field(name="Resist Pride", value=true_identity["resistance_pride"])
+        embed.add_field(name="Resist Pride", value=true_identity["resistance_envy"])
+        embed.add_field(name="Resist Slash", value=true_identity["resistance_slash"])
+        embed.add_field(name="Resist Pierce", value=true_identity["resistance_pierce"])
+        embed.add_field(name="Resist Blunt", value=true_identity["resistance_blunt"])
+        delete_button = DeleteEmbedView(author=ctx.author, message=message)
+        await message.edit(
+            content="",
+            embed=embed,
+            view=delete_button,
+        )
 
 
 async def setup(bot):

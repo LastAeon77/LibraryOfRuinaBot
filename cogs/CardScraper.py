@@ -67,8 +67,10 @@ class searchCard(commands.Cog):
             link = f"https://aeonmoon.vercel.app/lor/card/{data['slug']}"
             imgpath = data["ImgPath"]
             if imgpath[:8] == "LoR_Data":
-                imgpath = f"https://malcute.aeonmoon.page/django_static/{imgpath}".replace(
-                    " ", "%20"
+                imgpath = (
+                    f"https://malcute.aeonmoon.page/django_static/{imgpath}".replace(
+                        " ", "%20"
+                    )
                 )
 
             if data["On_Play_Effect"] == "NULL":
@@ -259,51 +261,43 @@ class searchCard(commands.Cog):
             best_match = best_match[0]
             true_abno = [x for x in abnos if x["name"].lower() == best_match]
             true_abno = true_abno[0]
-            exists = True
-        if exists:
-            id_of_abno = true_abno["id"]
-            name = true_abno["name"]
-            effect = true_abno["effects"]
-            description = true_abno["description"]
-            emotion_type = true_abno["emotion_type"]
-            if emotion_type == "BD":
-                emotion_type = "Breakdown"
-            else:
-                emotion_type = "Awakening"
-            emotion_level = true_abno["emotion_level"]
-            office = true_abno["office"]
-            general_info_str = f"""
-            > Emotion Type: {emotion_type}
-            > Emotion Level: {emotion_level}
-            > Floor: {office}
-            """
-            embed = discord.Embed()
-            embed.color = 3447003
-            embed.set_author(name=name)
-            embed.description = general_info_str
-            embed.add_field(name="Description", value=description)
-            embed.add_field(name="Effect", value=effect)
-            embed.set_footer(text=f"{LINK}/lor/abno/{id_of_abno}")
-            ImgPath = true_abno["ImgPath"]
-            if ImgPath[:8] == "lor_data" or ImgPath[:8] == "LoR_Data":
-                ImgPath = ImgPath.replace(" ", "%20")
-                embed.set_image(url=f"https://malcute.aeonmoon.page/django_static/{ImgPath}")
-            else:
-                embed.set_image(url=ImgPath)
-
-            return await message.edit(
-                content="Here is the best match",
-                embed=embed,
-                view=delete_button,
+        id_of_abno = true_abno["id"]
+        name = true_abno["name"]
+        effect = true_abno["effects"]
+        description = true_abno["description"]
+        emotion_type = true_abno["emotion_type"]
+        if emotion_type == "BD":
+            emotion_type = "Breakdown"
+        else:
+            emotion_type = "Awakening"
+        emotion_level = true_abno["emotion_level"]
+        office = true_abno["office"]
+        general_info_str = f"""
+        > Emotion Type: {emotion_type}
+        > Emotion Level: {emotion_level}
+        > Floor: {office}
+        """
+        embed = discord.Embed()
+        embed.color = 3447003
+        embed.set_author(name=name)
+        embed.description = general_info_str
+        embed.add_field(name="Description", value=description)
+        embed.add_field(name="Effect", value=effect)
+        embed.set_footer(text=f"{LINK}/lor/abno/{id_of_abno}")
+        ImgPath = true_abno["ImgPath"]
+        if ImgPath[:8] == "lor_data" or ImgPath[:8] == "LoR_Data":
+            ImgPath = ImgPath.replace(" ", "%20")
+            embed.set_image(
+                url=f"https://malcute.aeonmoon.page/django_static/{ImgPath}"
             )
         else:
-            embed = discord.Embed()
-            embed.set_author(name="We could not find this abno page, did you mean:")
-            str_of_names = ""
-            for names in list_of_name:
-                str_of_names += f"> {names}\n"
-            embed.description = str_of_names
-            return await message.edit(embed=embed, view=delete_button)
+            embed.set_image(url=ImgPath)
+
+        return await message.edit(
+            content="Here is the best match",
+            embed=embed,
+            view=delete_button,
+        )
 
     @commands.hybrid_command()
     async def abno(self, ctx, *, search: str):
