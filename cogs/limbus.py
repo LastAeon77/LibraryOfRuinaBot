@@ -226,23 +226,30 @@ class Limbus(commands.Cog):
             await ctx.send("Error")
 
     @commands.hybrid_command()
-    async def identity(self, ctx, arx: str):
+    async def iden(self, ctx, *, arx: str):
+        await self.identity(ctx, arx)
+
+    @commands.hybrid_command()
+    async def identity(self, ctx, *, arx: str):
         message = await ctx.send("Loading...")
         soup = await get_site_content_json(f"{LINK}/api/limbus/identity")
         choices = []
+
         for x in soup:
-            choices.append(x["name"].lower())
+            choices.append(f"{x['name'].lower()}|{x['sinner'].lower()}")
         best_match = process.extractOne(arx.lower(), choices, scorer=fuzz.ratio)
+        best_match = best_match[0]
+        best_match = best_match.split("|")
+        best_match.pop()
         best_match = best_match[0]
         true_identity = [x for x in soup if x["name"].lower() == best_match]
         true_identity = true_identity[0]
-
         embed = discord.Embed()
         embed.set_author(name=true_identity["name"])
-        embed.add_field(
-            name="Rarity",
-            value=("".join(["0" for i in range(true_identity["rarity"])])),
-        )
+        # embed.add_field(
+        #     name="Rarity",
+        #     value=("".join(["0" for i in range(true_identity["rarity"])])),
+        # )
         embed.add_field(name="Sinner", value=true_identity["sinner"])
         embed.add_field(
             name="Passive on Field", value=true_identity["passive_on_field"]
@@ -250,19 +257,19 @@ class Limbus(commands.Cog):
         embed.add_field(
             name="Passive off Field", value=true_identity["passive_off_field"]
         )
-        embed.add_field(name="Skills", value=true_identity["skills"])
-        embed.add_field(name="Resist Wrath", value=true_identity["resistance_wrath"])
-        embed.add_field(name="Resist Lust", value=true_identity["resistance_lust"])
-        embed.add_field(name="Resist Sloth", value=true_identity["resistance_sloth"])
-        embed.add_field(
-            name="Resist Gluttony", value=true_identity["resistance_gluttony"]
-        )
-        embed.add_field(name="Resist Gloom", value=true_identity["resistance_gloom"])
-        embed.add_field(name="Resist Pride", value=true_identity["resistance_pride"])
-        embed.add_field(name="Resist Pride", value=true_identity["resistance_envy"])
+        embed.add_field(name="Skill_1", value=true_identity["skill_1"], inline=True)
+        embed.add_field(name="Skill_2", value=true_identity["skill_2"], inline=True)
+        embed.add_field(name="Skill_3", value=true_identity["skill_3"], inline=True)
         embed.add_field(name="Resist Slash", value=true_identity["resistance_slash"])
         embed.add_field(name="Resist Pierce", value=true_identity["resistance_pierce"])
         embed.add_field(name="Resist Blunt", value=true_identity["resistance_blunt"])
+        imgpath = (
+            true_identity["image_link"]
+            if true_identity["image_link"] and len(true_identity["image_link"]) > 0
+            else "https://cdn.discordapp.com/attachments/750725415391330378/1079440000371937391/image.png"
+        )
+
+        embed.set_image(url=imgpath)
         delete_button = DeleteEmbedView(author=ctx.author, message=message)
         await message.edit(
             content="",
@@ -271,7 +278,7 @@ class Limbus(commands.Cog):
         )
 
     @commands.hybrid_command()
-    async def ego(self, ctx, arx: str):
+    async def ego(self, ctx, *, arx: str):
         message = await ctx.send("Loading...")
         soup = await get_site_content_json(f"{LINK}/api/limbus/ego")
         idenity_data = [x for x in soup if str(x["name"]).lower() == str(arx).lower()]
@@ -309,11 +316,70 @@ class Limbus(commands.Cog):
         embed.add_field(name="Resist Slash", value=true_identity["resistance_slash"])
         embed.add_field(name="Resist Pierce", value=true_identity["resistance_pierce"])
         embed.add_field(name="Resist Blunt", value=true_identity["resistance_blunt"])
+        imgpath = (
+            true_identity["image_link"]
+            if true_identity["image_link"] and len(true_identity["image_link"]) > 0
+            else "https://cdn.discordapp.com/attachments/750725415391330378/1079440000371937391/image.png"
+        )
+
+        embed.set_image(url=imgpath)
         delete_button = DeleteEmbedView(author=ctx.author, message=message)
         await message.edit(
             content="",
             embed=embed,
             view=delete_button,
+        )
+
+    @commands.hybrid_command()
+    async def passive(self, ctx, *, arx: str):
+        message = await ctx.send("Loading...")
+        soup = await get_site_content_json(f"{LINK}/api/limbus/passive")
+        soup_2 = await get_site_content_json(f"{LINK}/api/limbus/passive_ego")
+        soup = soup + soup_2
+        choices = []
+        for x in soup:
+            choices.append(f"{x['name'].lower()}")
+        best_match = process.extractOne(arx.lower(), choices, scorer=fuzz.ratio)
+        best_match = best_match[0]
+        true_match = [x for x in soup if x["name"].lower() == best_match]
+        true_match = true_match[0]
+        embed = discord.Embed()
+        embed.set_author(name=true_match["name"])
+        embed.add_field(name="Description", value=true_match["desc"])
+        await message.edit(
+            content="",
+            embed=embed,
+        )
+
+    @commands.hybrid_command()
+    async def skill(self, ctx, *, arx: str):
+        message = await ctx.send("Loading...")
+        soup = await get_site_content_json(f"{LINK}/api/limbus/skill")
+        soup_2 = await get_site_content_json(f"{LINK}/api/limbus/skill_ego")
+        soup = soup + soup_2
+        choices = []
+        for x in soup:
+            choices.append(f"{x['name'].lower()}| {x['level']}")
+        best_match = process.extractOne(
+            arx.lower(), choices, processor=None, scorer=fuzz.ratio
+        )
+        best_match = best_match[0]
+        best_match = best_match.split("|")
+        name = best_match[0]
+        level = int(best_match[1])
+
+        true_match = [
+            x for x in soup if x["name"].lower() == name and x["level"] == level
+        ]
+        true_match = true_match[0]
+        embed = discord.Embed()
+        embed.set_author(name=true_match["name"])
+        embed.add_field(name="Level", value=true_match["level"], inline=False)
+        embed.add_field(name="Description", value=true_match["desc"], inline=False)
+        embed.add_field(name="Coins", value=true_match["coindescs"], inline=False)
+        await message.edit(
+            content="",
+            embed=embed,
         )
 
 
