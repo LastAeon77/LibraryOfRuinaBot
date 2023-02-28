@@ -227,7 +227,7 @@ class Limbus(commands.Cog):
 
     @commands.hybrid_command()
     async def iden(self, ctx, *, arx: str):
-        await self.identity(ctx, arx)
+        await self.identity(ctx, arx=arx)
 
     @commands.hybrid_command()
     async def identity(self, ctx, *, arx: str):
@@ -279,23 +279,37 @@ class Limbus(commands.Cog):
 
     @commands.hybrid_command()
     async def ego(self, ctx, *, arx: str):
+        RESISTANCE_LIST = [
+            "resistance_wrath",
+            "resistance_lust",
+            "resistance_sloth",
+            "resistance_gluttony",
+            "resistance_gloom",
+            "resistance_pride",
+            "resistance_envy",
+        ]
         message = await ctx.send("Loading...")
-        soup = await get_site_content_json(f"{LINK}/api/limbus/ego")
-        idenity_data = [x for x in soup if str(x["name"]).lower() == str(arx).lower()]
-        if not idenity_data:
-            choices = []
-            for x in soup:
-                choices.append(x["name"].lower())
-            best_match = process.extractOne(arx.lower(), choices, scorer=fuzz.ratio)
-            best_match = best_match[0]
-            true_identity = [x for x in idenity_data if x["name"].lower() == best_match]
-            true_identity = true_identity[0]
+        soup = await get_site_content_json(f"{LINK}/api/limbus/EGO")
+        choices = []
+        for x in soup:
+            choices.append(f"{x['name'].lower()}|{x['sinner'].lower()}")
+        best_match = process.extractOne(arx.lower(), choices, scorer=fuzz.ratio)
+        best_match = best_match[0]
+        best_match = best_match.split("|")
+        sinner_name = best_match[1]
+        name = best_match[0]
+        true_identity = [
+            x
+            for x in soup
+            if x["name"].lower() == name and x["sinner"].lower() == sinner_name
+        ]
+        true_identity = true_identity[0]
         embed = discord.Embed()
         embed.set_author(name=true_identity["name"])
-        embed.add_field(
-            name="Rarity",
-            value=("".join(["0" for i in range(true_identity["rarity"])])),
-        )
+        # embed.add_field(
+        #     name="Rarity",
+        #     value=("".join(["0" for i in range(true_identity["rarity"])])),
+        # )
         embed.add_field(name="Sinner", value=true_identity["sinner"])
         embed.add_field(
             name="Passive on Field", value=true_identity["passive_on_field"]
@@ -303,19 +317,13 @@ class Limbus(commands.Cog):
         # embed.add_field(
         #     name="Passive off Field", value=true_identity["passive_off_field"]
         # )
-        embed.add_field(name="Skills", value=true_identity["skills"])
-        embed.add_field(name="Resist Wrath", value=true_identity["resistance_wrath"])
-        embed.add_field(name="Resist Lust", value=true_identity["resistance_lust"])
-        embed.add_field(name="Resist Sloth", value=true_identity["resistance_sloth"])
-        embed.add_field(
-            name="Resist Gluttony", value=true_identity["resistance_gluttony"]
-        )
-        embed.add_field(name="Resist Gloom", value=true_identity["resistance_gloom"])
-        embed.add_field(name="Resist Pride", value=true_identity["resistance_pride"])
-        embed.add_field(name="Resist Pride", value=true_identity["resistance_envy"])
-        embed.add_field(name="Resist Slash", value=true_identity["resistance_slash"])
-        embed.add_field(name="Resist Pierce", value=true_identity["resistance_pierce"])
-        embed.add_field(name="Resist Blunt", value=true_identity["resistance_blunt"])
+        # embed.add_field(name="Skills", value=true_identity["skills"])
+        embed.add_field(name="Awakening Skill", value=true_identity["awakening_skill"])
+        embed.add_field(name="Corrision Skill", value=true_identity["corrision_skill"])
+        for resist in RESISTANCE_LIST:
+            if true_identity[resist] != 'Normal':
+                new_string = 'Resist ' + resist.split('_')[1].capitalize()
+                embed.add_field(name=new_string, value=true_identity[resist])
         imgpath = (
             true_identity["image_link"]
             if true_identity["image_link"] and len(true_identity["image_link"]) > 0
@@ -377,6 +385,27 @@ class Limbus(commands.Cog):
         embed.add_field(name="Level", value=true_match["level"], inline=False)
         embed.add_field(name="Description", value=true_match["desc"], inline=False)
         embed.add_field(name="Coins", value=true_match["coindescs"], inline=False)
+        await message.edit(
+            content="",
+            embed=embed,
+        )
+
+    @commands.hybrid_command()
+    async def key(self, ctx, *, arx: str):
+        message = await ctx.send("Loading...")
+        soup = await get_site_content_json(f"{LINK}/api/limbus/battle_keyword")
+        choices = []
+        for x in soup:
+            choices.append(f"{x['name'].lower()}")
+        best_match = process.extractOne(
+            arx.lower(), choices, processor=None, scorer=fuzz.ratio
+        )
+        best_match = best_match[0]
+        true_match = [x for x in soup if x["name"].lower() == best_match]
+        true_match = true_match[0]
+        embed = discord.Embed()
+        embed.set_author(name=true_match["name"])
+        embed.add_field(name="Description", value=true_match["desc"], inline=False)
         await message.edit(
             content="",
             embed=embed,
