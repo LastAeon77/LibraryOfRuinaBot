@@ -227,22 +227,31 @@ class Limbus(commands.Cog):
 
     @commands.hybrid_command()
     async def iden(self, ctx, *, arx: str):
+        """Shows identity info"""
         await self.identity(ctx, arx=arx)
 
     @commands.hybrid_command()
     async def identity(self, ctx, *, arx: str):
+        """Shows identity info"""
         message = await ctx.send("Loading...")
         soup = await get_site_content_json(f"{LINK}/api/limbus/identity")
         choices = []
 
         for x in soup:
-            choices.append(f"{x['name'].lower()}|{x['sinner'].lower()}")
+            choices.append(f"{x['name'].lower()} | {x['sinner'].lower()}")
         best_match = process.extractOne(arx.lower(), choices, scorer=fuzz.ratio)
+
         best_match = best_match[0]
         best_match = best_match.split("|")
-        best_match.pop()
+
+        sinner = best_match[1]
         best_match = best_match[0]
-        true_identity = [x for x in soup if x["name"].lower() == best_match]
+        true_identity = [
+            x
+            for x in soup
+            if x["name"].lower() == best_match.strip()
+            and x["sinner"].lower() == sinner.strip()
+        ]
         true_identity = true_identity[0]
         embed = discord.Embed()
         embed.set_author(name=true_identity["name"])
@@ -279,6 +288,7 @@ class Limbus(commands.Cog):
 
     @commands.hybrid_command()
     async def ego(self, ctx, *, arx: str):
+        """Shows Limbus EGO info"""
         RESISTANCE_LIST = [
             "resistance_wrath",
             "resistance_lust",
@@ -321,8 +331,8 @@ class Limbus(commands.Cog):
         embed.add_field(name="Awakening Skill", value=true_identity["awakening_skill"])
         embed.add_field(name="Corrision Skill", value=true_identity["corrision_skill"])
         for resist in RESISTANCE_LIST:
-            if true_identity[resist] != 'Normal':
-                new_string = 'Resist ' + resist.split('_')[1].capitalize()
+            if true_identity[resist] != "Normal":
+                new_string = "Resist " + resist.split("_")[1].capitalize()
                 embed.add_field(name=new_string, value=true_identity[resist])
         imgpath = (
             true_identity["image_link"]
