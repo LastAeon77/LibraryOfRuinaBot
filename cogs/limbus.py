@@ -233,6 +233,7 @@ class Limbus(commands.Cog):
     @commands.hybrid_command()
     async def identity(self, ctx, *, arx: str):
         """Shows identity info"""
+        color_code = {3: 0xF1C40F, 2: 0xE74C3C, 1: 0x979C9F}
         message = await ctx.send("Loading...")
         soup = await get_site_content_json(f"{LINK}/api/limbus/identity")
         choices = []
@@ -259,19 +260,37 @@ class Limbus(commands.Cog):
         #     name="Rarity",
         #     value=("".join(["0" for i in range(true_identity["rarity"])])),
         # )
+        general_info_string = f"""
+HP: {true_identity['hp']}
+Block:{true_identity['block']}
+Speed:{true_identity['speed']}
+lvl 30 dmg: {int(float(true_identity['base_damage']) + float(true_identity['growth'])*29)}
+Growth: {true_identity['growth']}
+Rarity : {"".join(["0" for i in range(true_identity['rarity'])])}
+        """
+        print(general_info_string)
+
+        embed.add_field(name="General Info", value=general_info_string)
+        embed.add_field(name="Affinity", value=true_identity["affinity"])
         embed.add_field(name="Sinner", value=true_identity["sinner"])
-        embed.add_field(
-            name="Passive on Field", value=true_identity["passive_on_field"]
-        )
-        embed.add_field(
-            name="Passive off Field", value=true_identity["passive_off_field"]
-        )
-        embed.add_field(name="Skill_1", value=true_identity["skill_1"], inline=True)
-        embed.add_field(name="Skill_2", value=true_identity["skill_2"], inline=True)
-        embed.add_field(name="Skill_3", value=true_identity["skill_3"], inline=True)
-        embed.add_field(name="Resist Slash", value=true_identity["resistance_slash"])
-        embed.add_field(name="Resist Pierce", value=true_identity["resistance_pierce"])
-        embed.add_field(name="Resist Blunt", value=true_identity["resistance_blunt"])
+        passive_string = f"""
+Combat= {true_identity["passive_on_field"]}
+Support= {true_identity["passive_off_field"]}        
+        """
+        embed.add_field(name="Passives", value=passive_string)
+
+        skill_string = f"""
+Skill 1: {true_identity['skill_1']} x{true_identity['skill_1_count']}
+Skill 2: {true_identity['skill_2']} x{true_identity['skill_2_count']}
+Skill 3: {true_identity['skill_3']} x{true_identity['skill_3_count']}
+        """
+        resist_string = f"""
+Reist Slash: {true_identity['resistance_slash']}
+Resist Pierce: {true_identity['resistance_pierce']}
+Resist Blunt: {true_identity['resistance_blunt']}
+        """
+        embed.add_field(name="Skills", value=skill_string)
+        embed.add_field(name="Resists", value=resist_string)
         imgpath = (
             true_identity["image_link"]
             if true_identity["image_link"] and len(true_identity["image_link"]) > 0
@@ -279,6 +298,7 @@ class Limbus(commands.Cog):
         )
 
         embed.set_image(url=imgpath)
+        embed.color = color_code[true_identity["rarity"]]
         delete_button = DeleteEmbedView(author=ctx.author, message=message)
         await message.edit(
             content="",
@@ -371,6 +391,15 @@ class Limbus(commands.Cog):
 
     @commands.hybrid_command()
     async def skill(self, ctx, *, arx: str):
+        color_code = {
+            "Wrath": 0x992D22,
+            "Lust": 0xA84300,
+            "Sloth": 0xF1C40F,
+            "Gluttony": 0x2ECC71,
+            "Gloom": 0x3498DB,
+            "Pride": 0x206694,
+            "Envy": 0x71368A,
+        }
         message = await ctx.send("Loading...")
         soup = await get_site_content_json(f"{LINK}/api/limbus/skill")
         soup_2 = await get_site_content_json(f"{LINK}/api/limbus/skill_ego")
@@ -392,9 +421,19 @@ class Limbus(commands.Cog):
         true_match = true_match[0]
         embed = discord.Embed()
         embed.set_author(name=true_match["name"])
-        embed.add_field(name="Level", value=true_match["level"], inline=False)
-        embed.add_field(name="Description", value=true_match["desc"], inline=False)
-        embed.add_field(name="Coins", value=true_match["coindescs"], inline=False)
+        general_info = f"""Level: {true_match["level"]}
+Sin Type: {true_match["type"]}
+Damage Type: {true_match["damage_type"]}
+        """
+        embed.add_field(name="General Info", value=general_info, inline=False)
+
+        embed.add_field(name="Effect", value=true_match["desc"], inline=False)
+        coin_effects = true_match["coindescs"].split("\n")
+        coin_effects_string = f"{str(true_match['coin_roll'])} \n"
+        for i in range(true_match["coin_num"]):
+            coin_effects_string += f"+{true_match['coin_mod']}: {coin_effects[i]}\n"
+        embed.color = color_code.get(true_match["type"], "#71368A")
+        embed.add_field(name="Rolls", value=coin_effects_string, inline=False)
         await message.edit(
             content="",
             embed=embed,
