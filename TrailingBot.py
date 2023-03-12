@@ -99,19 +99,19 @@ async def main():
                 except Exception as e:
                     print(f"Failed to load extension {file}: {e}")
         # eating too much space so I stop using logging.
-        logger = logging.getLogger("discord")
-        logger.setLevel(logging.DEBUG)
-        handler = RotatingFileHandler(
-            filename="data/discord.log",
-            encoding="utf-8",
-            mode="a",
-            maxBytes=5 * 1024 * 1024,
-            backupCount=2,
-        )
-        handler.setFormatter(
-            logging.Formatter("%(asctime)s:%(levelname)s:%(name)s: %(message)s")
-        )
-        logger.addHandler(handler)
+        # logger = logging.getLogger("discord")
+        # logger.setLevel(logging.DEBUG)
+        # handler = RotatingFileHandler(
+        #     filename="data/discord.log",
+        #     encoding="utf-8",
+        #     mode="a",
+        #     maxBytes=5 * 1024 * 1024,
+        #     backupCount=2,
+        # )
+        # handler.setFormatter(
+        #     logging.Formatter("%(asctime)s:%(levelname)s:%(name)s: %(message)s")
+        # )
+        # logger.addHandler(handler)
         # bot.run(bot.config["discord"]["token"])
         await bot.start(bot.config["discord"]["token"])
 

@@ -268,7 +268,6 @@ lvl 30 dmg: {int(float(true_identity['base_damage']) + float(true_identity['grow
 Growth: {true_identity['growth']}
 Rarity : {"".join(["0" for i in range(true_identity['rarity'])])}
         """
-        print(general_info_string)
 
         embed.add_field(name="General Info", value=general_info_string)
         embed.add_field(name="Affinity", value=true_identity["affinity"])
@@ -416,14 +415,16 @@ Resist Blunt: {true_identity['resistance_blunt']}
         level = int(best_match[1])
 
         true_match = [
-            x for x in soup if x["name"].lower() == name and x["level"] == level
+            x
+            for x in soup
+            if x["name"].lower() == name and int(x["level"]) == int(level)
         ]
         true_match = true_match[0]
         embed = discord.Embed()
         embed.set_author(name=true_match["name"])
         general_info = f"""Level: {true_match["level"]}
-Sin Type: {true_match["type"]}
-Damage Type: {true_match["damage_type"]}
+Sin Type: {true_match['type']}
+Damage Type: {true_match['damage_type']}
         """
         embed.add_field(name="General Info", value=general_info, inline=False)
 
@@ -431,7 +432,7 @@ Damage Type: {true_match["damage_type"]}
         coin_effects = true_match["coindescs"].split("\n")
         coin_effects_string = f"{str(true_match['coin_roll'])} \n"
         for i in range(true_match["coin_num"]):
-            coin_effects_string += f"+{true_match['coin_mod']}: {coin_effects[i]}\n"
+            coin_effects_string += f"+{true_match['coin_mod']}: {coin_effects[i] if i<len(coin_effects) else ''}\n"
         embed.color = color_code.get(true_match["type"], "#71368A")
         embed.add_field(name="Rolls", value=coin_effects_string, inline=False)
         await message.edit(
