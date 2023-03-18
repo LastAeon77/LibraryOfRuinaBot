@@ -244,13 +244,13 @@ class Limbus(commands.Cog):
         soup = await get_site_content_json(f"{LINK}/api/limbus/identity")
         choices = []
 
-        for x in soup:
-            choices.append(f"{x['name'].lower()} | {x['sinner'].lower()}")
-        best_match = process.extractOne(arx.lower(), choices, scorer=fuzz.ratio)
+        # for x in soup:
+        #     choices.append(f"{x['name'].lower()} | {x['sinner'].lower()}")
+        # best_match = process.extractOne(arx.lower(), choices, scorer=fuzz.ratio)
 
-        best_match = best_match[0]
-        best_match = best_match.split("|")
-
+        # best_match = best_match[0]
+        # best_match = best_match.split("|")
+        best_match = await self.fuzzy_search(arx.lower(),choices=choices)
         sinner = best_match[1]
         best_match = best_match[0]
         true_identity = [
@@ -328,9 +328,10 @@ Resist Blunt: {true_identity['resistance_blunt']}
         choices = []
         for x in soup:
             choices.append(f"{x['name'].lower()}|{x['sinner'].lower()}")
-        best_match = process.extractOne(arx.lower(), choices, scorer=fuzz.ratio)
-        best_match = best_match[0]
-        best_match = best_match.split("|")
+        # best_match = process.extractOne(arx.lower(), choices, scorer=fuzz.ratio)
+        # best_match = best_match[0]
+        # best_match = best_match.split("|")
+        best_match = await self.fuzzy_search(arx.lower(),choices=choices)
         sinner_name = best_match[1]
         name = best_match[0]
         true_identity = [
@@ -412,11 +413,12 @@ Resist Blunt: {true_identity['resistance_blunt']}
         choices = []
         for x in soup:
             choices.append(f"{x['name'].lower()}| {x['level']}|{x['in_game_id']}")
-        best_match = process.extractOne(
-            arx.lower(), choices, processor=None, scorer=fuzz.ratio
-        )
-        best_match = best_match[0]
-        best_match = best_match.split("|")
+        # best_match = process.extractOne(
+        #     arx.lower(), choices, processor=None, scorer=fuzz.ratio
+        # )
+        # best_match = best_match[0]
+        # best_match = best_match.split("|")
+        best_match = await self.fuzzy_search(arx.lower(),choices=choices)
         name = best_match[0]
         level = int(best_match[1])
         in_game_id = best_match[2]
