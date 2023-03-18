@@ -412,7 +412,7 @@ Resist Blunt: {true_identity['resistance_blunt']}
         soup = soup + soup_2
         choices = []
         for x in soup:
-            choices.append(f"{x['name'].lower()}| {x['level']}|{x['in_game_id']}")
+            choices.append(f"{x['name'].lower()}| {x['level']}|{x['in_game_id']}|{x.get('emotion_type','')}")
         # best_match = process.extractOne(
         #     arx.lower(), choices, processor=None, scorer=fuzz.ratio
         # )
@@ -422,6 +422,7 @@ Resist Blunt: {true_identity['resistance_blunt']}
         name = best_match[0]
         level = int(best_match[1])
         in_game_id = best_match[2]
+        emotion_type = best_match[3]
 
         true_match = [
             x
@@ -429,6 +430,7 @@ Resist Blunt: {true_identity['resistance_blunt']}
             if x["name"].lower() == name
             and int(x["level"]) == int(level)
             and x["in_game_id"] == in_game_id
+            and x.get('emotion_type','') == emotion_type
         ]
         true_match = true_match[0]
         embed = discord.Embed()
@@ -439,6 +441,8 @@ Resist Blunt: {true_identity['resistance_blunt']}
 Sin Type: {true_match.get('type','')}
 Damage Type: {true_match.get('damage_type','-')}
         """
+        if true_match.get('emotion_type'):
+            general_info += f"Emotion Type: {true_match.get('emotion_type')}"
         embed.add_field(name="General Info", value=general_info, inline=False)
 
         embed.add_field(name="Effect", value=true_match.get("desc", ""), inline=False)
