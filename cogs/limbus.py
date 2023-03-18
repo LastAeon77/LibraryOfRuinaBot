@@ -43,6 +43,12 @@ class Limbus(commands.Cog):
         self.printer.start()
         self.below_150000 = True
 
+    async def fuzzy_search(self,query,choices):
+        best_match = process.extractOne(query.lower(),choices,processor=None,scorer=fuzz.ratio)
+        best_match = best_match[0]
+        best_match = best_match.split("|")
+        return best_match
+
     @commands.hybrid_command()
     async def count(self, ctx):
         """Prints out the number of youtube and twitter follower count"""
@@ -405,7 +411,7 @@ Resist Blunt: {true_identity['resistance_blunt']}
         soup = soup + soup_2
         choices = []
         for x in soup:
-            choices.append(f"{x['name'].lower()}| {x['level']}")
+            choices.append(f"{x['name'].lower()}| {x['level']}|{x['in_game_id']}")
         best_match = process.extractOne(
             arx.lower(), choices, processor=None, scorer=fuzz.ratio
         )
@@ -413,27 +419,33 @@ Resist Blunt: {true_identity['resistance_blunt']}
         best_match = best_match.split("|")
         name = best_match[0]
         level = int(best_match[1])
+        in_game_id = best_match[2]
 
         true_match = [
             x
             for x in soup
-            if x["name"].lower() == name and int(x["level"]) == int(level)
+            if x["name"].lower() == name
+            and int(x["level"]) == int(level)
+            and x["in_game_id"] == in_game_id
         ]
         true_match = true_match[0]
         embed = discord.Embed()
-        embed.set_author(name=true_match["name"])
-        general_info = f"""Level: {true_match["level"]}
-Sin Type: {true_match['type']}
-Damage Type: {true_match['damage_type']}
+        embed.set_author(
+            name=f"{true_match.get('name','none')} {true_match.get('in_game_id','')}"
+        )
+        general_info = f"""Level: {true_match.get('level','')}
+Sin Type: {true_match.get('type','')}
+Damage Type: {true_match.get('damage_type','-')}
         """
         embed.add_field(name="General Info", value=general_info, inline=False)
 
-        embed.add_field(name="Effect", value=true_match["desc"], inline=False)
-        coin_effects = true_match["coindescs"].split("\n")
-        coin_effects_string = f"{str(true_match['coin_roll'])} \n"
-        for i in range(true_match["coin_num"]):
-            coin_effects_string += f"+{true_match['coin_mod']}: {coin_effects[i] if i<len(coin_effects) else ''}\n"
-        embed.color = color_code.get(true_match["type"], "#71368A")
+        embed.add_field(name="Effect", value=true_match.get("desc", ""), inline=False)
+        coin_effects = true_match.get("coindescs", "").split("\n")
+        coin_effects_string = f"{str(true_match.get('coin_roll',0))} \n"
+        if true_match.get("coin_num"):
+            for i in range(true_match.get("coin_num", 0)):
+                coin_effects_string += f"{('+'+ str(true_match.get('coin_mod',0))) if int(true_match.get('coin_mod'))>0 else true_match.get('coin_mod',0) }: {coin_effects[i] if i<len(coin_effects) else ''}\n"
+        embed.color = color_code.get(true_match.get("type", "fgds"), 0x71368A)
         embed.add_field(name="Rolls", value=coin_effects_string, inline=False)
         await message.edit(
             content="",
