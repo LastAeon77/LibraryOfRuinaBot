@@ -413,11 +413,6 @@ Resist Blunt: {true_identity['resistance_blunt']}
         choices = []
         for x in soup:
             choices.append(f"{x['name'].lower()}| {x['level']}|{x['in_game_id']}|{x.get('emotion_type','')}")
-        # best_match = process.extractOne(
-        #     arx.lower(), choices, processor=None, scorer=fuzz.ratio
-        # )
-        # best_match = best_match[0]
-        # best_match = best_match.split("|")
         best_match = await self.fuzzy_search(arx.lower(),choices=choices)
         name = best_match[0]
         level = int(best_match[1])
@@ -448,7 +443,7 @@ Damage Type: {true_match.get('damage_type','-')}
         embed.add_field(name="Effect", value=true_match.get("desc", ""), inline=False)
         coin_effects = true_match.get("coindescs", "").split("\n")
         coin_effects_string = f"{str(true_match.get('coin_roll',0))} \n"
-        if true_match.get("coin_num"):
+        if true_match.get("coin_num") and true_match.get('coin_mod'):
             for i in range(true_match.get("coin_num", 0)):
                 coin_effects_string += f"{('+'+ str(true_match.get('coin_mod',0))) if int(true_match.get('coin_mod'))>0 else true_match.get('coin_mod',0) }: {coin_effects[i] if i<len(coin_effects) else ''}\n"
         embed.color = color_code.get(true_match.get("type", "fgds"), 0x71368A)
