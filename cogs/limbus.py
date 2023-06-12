@@ -131,8 +131,6 @@ class Limbus(commands.Cog):
             total_seconds = time_delta.total_seconds()
             current_delta += total_seconds
             step += 1
-            # print(current_delta)
-            # print(60 * 60 * (hours - 1))
             if current_delta >= (60 * 60 * (hours - 1)):
                 # time_in_between = datetime_dates[i] - timedelta(
                 #     minutes=int(current_delta / 2)
@@ -243,13 +241,8 @@ class Limbus(commands.Cog):
         message = await ctx.send("Loading...")
         soup = await get_site_content_json(f"{LINK}/api/limbus/identity")
         choices = []
-
-        # for x in soup:
-        #     choices.append(f"{x['name'].lower()} | {x['sinner'].lower()}")
-        # best_match = process.extractOne(arx.lower(), choices, scorer=fuzz.ratio)
-
-        # best_match = best_match[0]
-        # best_match = best_match.split("|")
+        for x in soup:
+            choices.append(f"{x['name'].lower()}|{x['sinner'].lower()}")
         best_match = await self.fuzzy_search(arx.lower(),choices=choices)
         sinner = best_match[1]
         best_match = best_match[0]
@@ -262,15 +255,11 @@ class Limbus(commands.Cog):
         true_identity = true_identity[0]
         embed = discord.Embed()
         embed.set_author(name=true_identity["name"])
-        # embed.add_field(
-        #     name="Rarity",
-        #     value=("".join(["0" for i in range(true_identity["rarity"])])),
-        # )
+
         general_info_string = f"""
-HP: {true_identity['hp']}
-Block:{true_identity['block']}
-Speed:{true_identity['speed']}
-lvl 30 dmg: {int(float(true_identity['base_damage']) + float(true_identity['growth'])*29)}
+HP: {str(true_identity['hp'])}
+Block:{str(true_identity['block'])}
+Speed:{str(true_identity['speed'])}
 Growth: {true_identity['growth']}
 Rarity : {"".join(["0" for i in range(true_identity['rarity'])])}
         """
