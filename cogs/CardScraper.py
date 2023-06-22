@@ -184,7 +184,7 @@ class searchCard(commands.Cog):
         > Recommended Floor: {recc_floor}
         > Recommended Page: {recc_page}
         > Recommended Rank: {recc_rank}
-        > Make Your deck: https://aeonmoon.vercel.app/lor/createdeck"""
+        > Make Your deck: https://malcute.aeonmoon.page/lor/createdeck"""
         eff = soup["effect"]
         effstr = ""
         for effs in eff:
@@ -221,10 +221,10 @@ class searchCard(commands.Cog):
         if effstr != "":
             embed.add_field(name="Page Effects", value=effstr)
         embed.add_field(name="Cards", value=cardstr)
-        embed.set_footer(text=f"https://aeonmoon.vercel.app/lor/deck/{str(soup['id'])}")
+        embed.set_footer(text=f"https://malcute.aeonmoon.page/lor/deck/{str(soup['id'])}")
         embed.set_image(url="attachment://image.png")
         delete_button = DeleteEmbedView(author=ctx.author)
-        return await ctx.send(file=file, embed=embed, view=delete_button)
+        return await ctx.send(file=file, embed=embed, view=delete_button, content="You can now make decks at `malcute.aeonmoon.page/lor/createdeck` (fixed)")
 
     @commands.command()
     async def deck(self, ctx, *, arx: str):
