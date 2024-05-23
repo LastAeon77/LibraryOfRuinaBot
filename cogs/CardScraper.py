@@ -1,6 +1,7 @@
 from discord.ext import commands
 from rapidfuzz import fuzz, process
 import discord
+import json
 from utils.cardScrape import (
     scrape_deck_image,
     get_site_content_json,
@@ -24,6 +25,8 @@ Rarity_dict = {
     "E": "EGO",
 }
 
+DECK_AND_DESIGN = 774890755679846400
+SOTC_DECK_AND_DESIGN = 975143319472599110
 
 class DeleteEmbedView(discord.ui.View):
     def __init__(self, author, message=None):
@@ -50,7 +53,9 @@ class searchCard(commands.Cog):
 
     async def cardSearch(self, ctx, arx: str):
         message = await ctx.send("Loading...")
-        soup = await get_site_content_json(f"{LINK}/api/lor/card")
+        with open("./data/cards.json", 'r',encoding="UTF-8") as f:
+            soup = f.read()
+        soup = json.loads(soup)
         card_data = [x for x in soup if str(x["Name"]).lower() == str(arx).lower()]
         used_best_match = False
         if not card_data:
@@ -168,6 +173,23 @@ class searchCard(commands.Cog):
     async def searchDeck(self, ctx, arx: str):
         data = await get_site_content_json(f"{LINK}/api/lor/deck?format=json")
         choices = []
+        DECK_AND_DESIGN = 774890755679846400
+        RUINA_DISCUSSION = 718294958573879350
+        SOTC_DECK_AND_DESIGN = 925743312449708103
+        RUINA_STAR_OF_THE_CITY = 925743312449708103
+        def filter_data_no_spoiler(deck):
+            if int(deck["highest_rank"]) < 6:
+                return True
+            return False
+        
+        def filter_data_sotc(deck):
+            if int(deck["highest_rank"]) < 8:
+                return True
+            return False
+        if ctx.message.channel.id == DECK_AND_DESIGN or ctx.message.channel.id == RUINA_DISCUSSION :
+            data = list(filter(filter_data_no_spoiler,data))
+        if ctx.message.channel.id == SOTC_DECK_AND_DESIGN or ctx.message.channel.id == RUINA_STAR_OF_THE_CITY:
+            data = list(filter(filter_data_sotc,data))
         for x in data:
             choices.append(x["name"].lower())
         best_match = process.extractOne(arx.lower(), choices, scorer=fuzz.ratio)
@@ -387,8 +409,28 @@ class searchCard(commands.Cog):
         embed.set_footer(text="Source: https://aeonmoon.vercel.app/interview")
         await ctx.send(embed=embed)
 
+
+    @commands.hybrid_command()
+    async def updatecard(self,ctx):
+        """?updatecard updates the local card database with online database."""
+        soup = await get_site_content_json(f"{LINK}/api/lor/card")
+        with open("./data/cards.json", 'w',encoding="UTF-8") as f:
+            f.write(json.dumps(soup))
+        message = "done!"
+        await ctx.send("done")
+
     @commands.hybrid_command()
     async def page(self, ctx, *, search: str):
+        if ctx.message.guild.id != 718294958573879347:
+            await self.searchPage(ctx, search)
+
+        else:
+            if ctx.message.channel.id in self.allowed_channel:
+                await self.searchPage(ctx, search)
+            else:
+                await ctx.send("This command is not allowed in this channel.")
+
+    async def searchPage(self,ctx,search):
         """?page <page name> Looks for best matched page"""
         message = await ctx.send("Loading...")
         delete_button = DeleteEmbedView(author=ctx.author, message=message)
