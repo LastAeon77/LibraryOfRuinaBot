@@ -171,7 +171,19 @@ class searchCard(commands.Cog):
             await ctx.send("You are not allowed to use this command")
 
     async def searchDeck(self, ctx, arx: str):
-        data = await get_site_content_json(f"{LINK}/api/lor/deck?format=json")
+        deck_count = await get_site_content_json(f"{LINK}/api/lor/deckcount?format=json")
+        with open("./data/deck.json", 'r',encoding="UTF-8") as f:
+            data = f.read()
+        data = json.loads(data)
+        count = int(deck_count)
+        # print(len(data))
+        if len(data) != count:
+            new_soup = await get_site_content_json(f"{LINK}/api/lor/decklight?format=json")
+            with open("./data/deck.json", 'w',encoding="UTF-8") as f:
+                f.write(json.dumps(new_soup))
+            soup = new_soup
+
+        
         choices = []
         DECK_AND_DESIGN = 774890755679846400
         RUINA_DISCUSSION = 718294958573879350
@@ -192,10 +204,16 @@ class searchCard(commands.Cog):
             data = list(filter(filter_data_sotc,data))
         for x in data:
             choices.append(x["name"].lower())
-        best_match = process.extractOne(arx.lower(), choices, scorer=fuzz.ratio)
-        best_match = best_match[0]
-        soup = [x for x in data if x["name"].lower() == best_match]
-        soup = soup[0]
+
+        
+        best_match = process.extract(arx.lower(), choices, scorer=fuzz.ratio,limit=5)
+        # print(best_match)
+        best = best_match[0][0]
+        soups = [x for x in data if x["name"].lower() == best]
+        # print(soups)
+        # print(f"{LINK}/api/lor/deck/{soups[0]['id']}")
+        soup = await get_site_content_json(f"{LINK}/api/lor/deck/{soups[0]['id']}")
+        # print(soup)
         name_of_deck = soup["name"]
         creator = soup["creator"]
         recc_floor = soup["Recc_Floor"]
@@ -243,7 +261,7 @@ class searchCard(commands.Cog):
         if effstr != "":
             embed.add_field(name="Page Effects", value=effstr)
         embed.add_field(name="Cards", value=cardstr)
-        embed.set_footer(text=f"https://malcute.aeonmoon.page/lor/deck/{str(soup['id'])}")
+        embed.set_footer(text=f"https://malcute.aeonmoon.page/lor/deck/{str(soup['id'])}\nNext 3 best match: \n{best_match[1][0]}\n{best_match[2][0]}\n{best_match[3][0]}")
         embed.set_image(url="attachment://image.png")
         delete_button = DeleteEmbedView(author=ctx.author)
         return await ctx.send(file=file, embed=embed, view=delete_button, content="You can now make decks at `malcute.aeonmoon.page/lor/createdeck` (fixed)")
@@ -253,7 +271,6 @@ class searchCard(commands.Cog):
         """Looks for community made decks"""
         if ctx.message.guild.id != 718294958573879347:
             await self.searchDeck(ctx, arx)
-
         else:
             if ctx.message.channel.id in self.allowed_channel:
                 await self.searchDeck(ctx, arx)
