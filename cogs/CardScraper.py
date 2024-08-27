@@ -223,8 +223,7 @@ class searchCard(commands.Cog):
         > Creator: {creator}
         > Recommended Floor: {recc_floor}
         > Recommended Page: {recc_page}
-        > Recommended Rank: {recc_rank}
-        > Make Your deck: https://malcute.aeonmoon.page/lor/createdeck"""
+        > Description: {soup['description']}"""
         eff = soup["effect"]
         effstr = ""
         for effs in eff:

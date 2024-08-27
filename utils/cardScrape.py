@@ -2,9 +2,7 @@ import aiohttp
 from bs4 import BeautifulSoup
 from PIL import Image
 from io import BytesIO
-
-# import pandas as pd
-
+import json
 
 async def get_site_content(currUrl):
     async with aiohttp.ClientSession() as session:
@@ -12,6 +10,37 @@ async def get_site_content(currUrl):
             page = await resp.read()
     soup = BeautifulSoup(page, "lxml")
     return soup
+
+async def set_token():
+    with open("./resources/settings.json", "r") as f:
+        data = json.load(f)
+    username = data["discord_username_password"]["username"]
+    password = data["discord_username_password"]["password"]
+    async with aiohttp.ClientSession() as session:
+        async with session.post("https://malcute.aeonmoon.page/api/token/obtain/",data={"username":username, "password":password}) as resp:
+            page = await resp.json()
+            with open("./resources/tokens.json","w") as f:
+                f.write(json.dumps({"access":page.get('access'), "refresh":page.get('refresh')}))
+
+async def get_site_request_logged_in(currUrl,depth = 0):
+    with open("./resources/tokens.json","r") as f:
+        data = json.load(f)
+    if not data:
+        await set_token()
+    if data["access"] == "":
+        await set_token()
+    header = {
+        "Authorization": f"JWT {data['access']}",
+        "Content-Type": "application/json",
+        "accept": "application/json",
+    }
+    async with aiohttp.ClientSession() as session:
+        async with session.get(currUrl,headers=header) as resp:
+            if resp.status == 200:
+               return await resp.json()
+            elif resp.status == 401 and depth==0:
+                await set_token()
+                return await get_site_request_logged_in(currUrl,1)
 
 
 async def get_site_request(currUrl):

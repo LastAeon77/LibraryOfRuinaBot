@@ -22,7 +22,7 @@ bot.UPDATE_NOTICE = ""
 @bot.event
 async def on_ready():
     """Tells owner that bot is ready"""
-    await bot.tree.sync()
+    synced = await bot.tree.sync()
     # 718294958573879347
     print("Logged in as")
     print(bot.user.name)
@@ -59,6 +59,15 @@ async def num(ctx):
     await ctx.send(f"in {len(bot.guilds)} servs")
 
 
+
+@bot.command()
+async def numpeople(ctx):
+    total = 0
+    for guilds in bot.guilds:
+        total += guilds.member_count
+    await ctx.send(f"has {total} users")
+
+
 @bot.command()
 async def damnyouPM(ctx):
     await ctx.send("https://imgur.com/wAHRx0q")
@@ -80,7 +89,6 @@ async def add(ctx, left: int, right: int):
     """Adds two numbers together."""
     await ctx.send(left + right)
 
-
 @bot.command()
 async def hhpp(ctx):
     """Gives link to HamhamPangPang Registration"""
@@ -92,7 +100,8 @@ async def hhpp(ctx):
 async def main():
     async with bot:
         for file in os.listdir("cogs"):
-            if file.endswith(".py"):
+            # file == limbus.py is for testing only
+            if file.endswith(".py"): #and file=="limbus.py":
                 try:
                     await bot.load_extension("cogs." + os.path.splitext(file)[0])
                     print(f"Extension {file} loaded.")
