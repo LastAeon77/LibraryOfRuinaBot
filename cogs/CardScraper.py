@@ -28,6 +28,7 @@ Rarity_dict = {
 DECK_AND_DESIGN = 774890755679846400
 SOTC_DECK_AND_DESIGN = 975143319472599110
 
+
 class DeleteEmbedView(discord.ui.View):
     def __init__(self, author, message=None):
         super().__init__()
@@ -53,7 +54,7 @@ class searchCard(commands.Cog):
 
     async def cardSearch(self, ctx, arx: str):
         message = await ctx.send("Loading...")
-        with open("./data/cards.json", 'r',encoding="UTF-8") as f:
+        with open("./data/cards.json", "r", encoding="UTF-8") as f:
             soup = f.read()
         soup = json.loads(soup)
         card_data = [x for x in soup if str(x["Name"]).lower() == str(arx).lower()]
@@ -171,42 +172,52 @@ class searchCard(commands.Cog):
             await ctx.send("You are not allowed to use this command")
 
     async def searchDeck(self, ctx, arx: str):
-        deck_count = await get_site_content_json(f"{LINK}/api/lor/deckcount?format=json")
-        with open("./data/deck.json", 'r',encoding="UTF-8") as f:
+        deck_count = await get_site_content_json(
+            f"{LINK}/api/lor/deckcount?format=json"
+        )
+        with open("./data/deck.json", "r", encoding="UTF-8") as f:
             data = f.read()
         data = json.loads(data)
         count = int(deck_count)
         # print(len(data))
         if len(data) != count:
-            new_soup = await get_site_content_json(f"{LINK}/api/lor/decklight?format=json")
-            with open("./data/deck.json", 'w',encoding="UTF-8") as f:
+            new_soup = await get_site_content_json(
+                f"{LINK}/api/lor/decklight?format=json"
+            )
+            with open("./data/deck.json", "w", encoding="UTF-8") as f:
                 f.write(json.dumps(new_soup))
             soup = new_soup
 
-        
         choices = []
         DECK_AND_DESIGN = 774890755679846400
         RUINA_DISCUSSION = 718294958573879350
         SOTC_DECK_AND_DESIGN = 925743312449708103
         RUINA_STAR_OF_THE_CITY = 925743312449708103
+
         def filter_data_no_spoiler(deck):
             if int(deck["highest_rank"]) < 6:
                 return True
             return False
-        
+
         def filter_data_sotc(deck):
             if int(deck["highest_rank"]) < 8:
                 return True
             return False
-        if ctx.message.channel.id == DECK_AND_DESIGN or ctx.message.channel.id == RUINA_DISCUSSION :
-            data = list(filter(filter_data_no_spoiler,data))
-        if ctx.message.channel.id == SOTC_DECK_AND_DESIGN or ctx.message.channel.id == RUINA_STAR_OF_THE_CITY:
-            data = list(filter(filter_data_sotc,data))
+
+        if (
+            ctx.message.channel.id == DECK_AND_DESIGN
+            or ctx.message.channel.id == RUINA_DISCUSSION
+        ):
+            data = list(filter(filter_data_no_spoiler, data))
+        if (
+            ctx.message.channel.id == SOTC_DECK_AND_DESIGN
+            or ctx.message.channel.id == RUINA_STAR_OF_THE_CITY
+        ):
+            data = list(filter(filter_data_sotc, data))
         for x in data:
             choices.append(x["name"].lower())
 
-        
-        best_match = process.extract(arx.lower(), choices, scorer=fuzz.ratio,limit=5)
+        best_match = process.extract(arx.lower(), choices, scorer=fuzz.ratio, limit=5)
         # print(best_match)
         best = best_match[0][0]
         soups = [x for x in data if x["name"].lower() == best]
@@ -260,10 +271,17 @@ class searchCard(commands.Cog):
         if effstr != "":
             embed.add_field(name="Page Effects", value=effstr)
         embed.add_field(name="Cards", value=cardstr)
-        embed.set_footer(text=f"https://malcute.aeonmoon.page/lor/deck/{str(soup['id'])}\nNext 3 best match: \n{best_match[1][0]}\n{best_match[2][0]}\n{best_match[3][0]}")
+        embed.set_footer(
+            text=f"https://malcute.aeonmoon.page/lor/deck/{str(soup['id'])}\nNext 3 best match: \n{best_match[1][0]}\n{best_match[2][0]}\n{best_match[3][0]}"
+        )
         embed.set_image(url="attachment://image.png")
         delete_button = DeleteEmbedView(author=ctx.author)
-        return await ctx.send(file=file, embed=embed, view=delete_button, content="You can now make decks at `malcute.aeonmoon.page/lor/createdeck` (fixed)")
+        return await ctx.send(
+            file=file,
+            embed=embed,
+            view=delete_button,
+            content="You can now make decks at `malcute.aeonmoon.page/lor/createdeck` (fixed)",
+        )
 
     @commands.command()
     async def deck(self, ctx, *, arx: str):
@@ -425,12 +443,11 @@ class searchCard(commands.Cog):
         embed.set_footer(text="Source: https://aeonmoon.vercel.app/interview")
         await ctx.send(embed=embed)
 
-
     @commands.hybrid_command()
-    async def updatecard(self,ctx):
+    async def updatecard(self, ctx):
         """?updatecard updates the local card database with online database."""
         soup = await get_site_content_json(f"{LINK}/api/lor/card")
-        with open("./data/cards.json", 'w',encoding="UTF-8") as f:
+        with open("./data/cards.json", "w", encoding="UTF-8") as f:
             f.write(json.dumps(soup))
         message = "done!"
         await ctx.send("done")
@@ -446,7 +463,7 @@ class searchCard(commands.Cog):
             else:
                 await ctx.send("This command is not allowed in this channel.")
 
-    async def searchPage(self,ctx,search):
+    async def searchPage(self, ctx, search):
         """?page <page name> Looks for best matched page"""
         message = await ctx.send("Loading...")
         delete_button = DeleteEmbedView(author=ctx.author, message=message)

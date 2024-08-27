@@ -59,7 +59,6 @@ async def num(ctx):
     await ctx.send(f"in {len(bot.guilds)} servs")
 
 
-
 @bot.command()
 async def numpeople(ctx):
     total = 0
@@ -89,6 +88,7 @@ async def add(ctx, left: int, right: int):
     """Adds two numbers together."""
     await ctx.send(left + right)
 
+
 @bot.command()
 async def hhpp(ctx):
     """Gives link to HamhamPangPang Registration"""
@@ -101,7 +101,7 @@ async def main():
     async with bot:
         for file in os.listdir("cogs"):
             # file == limbus.py is for testing only
-            if file.endswith(".py"): #and file=="limbus.py":
+            if file.endswith(".py"):  # and file=="limbus.py":
                 try:
                     await bot.load_extension("cogs." + os.path.splitext(file)[0])
                     print(f"Extension {file} loaded.")
