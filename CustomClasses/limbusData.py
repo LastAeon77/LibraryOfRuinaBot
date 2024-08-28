@@ -59,6 +59,9 @@ keyword_dict = keyword_dict["dataList"]
 for dicts in keyword_dict:
     BATTLEKEYWORD["[" + dicts.get("id", "") + "]"] = dicts.get("name", "")
 
+def battle_keyword_dict():
+    return BATTLEKEYWORD
+
 
 def skill_description(skill_data: dict, skill_effect: dict, skill_num):
     def_type_dict = {
@@ -123,6 +126,9 @@ def skill_description(skill_data: dict, skill_effect: dict, skill_num):
     )
     for word, en_name in BATTLEKEYWORD.items():
         description = description.replace(word, en_name)
+    for word,en_name in SIN_DICT.items():
+        description = description.replace(word,en_name)
+
     description = re.sub("<[^>]+>", "", description)
 
     image_full_art_path = None
@@ -322,6 +328,9 @@ async def identity_data_analysis(
     for word, en_name in BATTLEKEYWORD.items():
         Identity_basic_description = Identity_basic_description.replace(word, en_name)
     Identity_basic_description = re.sub("<[^>]+>", "", Identity_basic_description)
+    for word,en_name in SIN_DICT.items():
+        Identity_basic_description = Identity_basic_description.replace(word,en_name)
+
 
     image_full_art_path = None
     if uptie_level >= 3:
@@ -419,6 +428,9 @@ async def ego_data_analysis(
     for word, en_name in BATTLEKEYWORD.items():
         description = description.replace(word, en_name)
     description = re.sub("<[^>]+>", "", description)
+    for word,en_name in SIN_DICT.items():
+        description = description.replace(word,en_name)
+
 
     ego_id = data_in_json["id"]
     embed = Embed()

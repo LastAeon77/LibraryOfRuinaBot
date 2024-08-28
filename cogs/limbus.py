@@ -4,10 +4,10 @@ from discord import app_commands
 import discord
 from rapidfuzz import fuzz, process
 import json
-
+import os
 # import tweepy
 from utils.cardScrape import get_site_content_json, get_site_request_logged_in
-from CustomClasses.limbusData import identity_data_analysis, ego_data_analysis
+from CustomClasses.limbusData import identity_data_analysis, ego_data_analysis, battle_keyword_dict
 
 
 LINK_LIMBUS_TWITTER = "https://socialblade.com/twitter/user/liberarelimbus"
@@ -73,12 +73,33 @@ class Limbus(commands.Cog):
             for x in ego_dict
         ]
 
-        # with open("./data/Limbus_Data/EN_BattleKeywords.json",encoding="utf-8") as f:
-        #     keyword_dict = json.load(f)
-        # keyword_dict = self.keyword_dict["dataList"]
-        # self.BattleKeyword = {}
-        # for dicts in keyword_dict:
-        #     self.BattleKeyword[dicts.get("id","")] = dicts.get("name","")
+        # Gift Section
+        self.gift_data = {}
+        for file in os.listdir("./data/Limbus_Data"):
+            if file.startswith("EN_EGOgift_"):
+                with open(f"./data/Limbus_Data/{file}", encoding="utf-8") as f:
+                    data = json.load(f)
+                    for dicts in data.get("dataList",[]):
+                        self.gift_data[dicts.get("id",0)] = dicts
+        self.gift_num = []
+        for k,v in self.gift_data.items():
+            self.gift_num.append((k,v.get("name")))
+
+        # Abnormality Observations
+        self.observation_data, self.observation_num = self.observation_dict_generate()
+
+    def observation_dict_generate(self):
+        observation_data = {}
+        for file in os.listdir("./data/Limbus_Data"):
+            if file.startswith("EN_AbnormalityGuides"):
+                with open(f"./data/Limbus_Data/{file}", encoding="utf-8") as f:
+                    data = json.load(f)
+                    for dicts in data.get("dataList",[]):
+                        observation_data[dicts.get("id",0)] = dicts
+        observe_num = []
+        for k,v in observation_data.items():
+            observe_num.append((k,v.get("name","") + " " + v.get("codeName","")))
+        return [observation_data.copy(),observe_num]
 
     async def fuzzy_search(self, query, choices):
         best_match = process.extractOne(
@@ -112,12 +133,37 @@ class Limbus(commands.Cog):
             if current.lower() in ego[1].lower()
         ]
 
+    async def gift_autocomplete(
+        self,
+        interaction: discord.Interaction,
+        current: str,
+    ):
+        egos = self.gift_num
+        return [
+            discord.app_commands.Choice(name=ego[1], value=str(ego[0]))
+            for ego in egos
+            if current.lower() in ego[1].lower()
+        ]
+
+    async def observation_autocomplete(
+        self,
+        interaction: discord.Interaction,
+        current: str,
+    ):
+        egos = self.observation_num
+        return [
+            discord.app_commands.Choice(name=ego[1], value=str(ego[0]))
+            for ego in egos
+            if current.lower() in ego[1].lower()
+        ]
+
+
     @app_commands.command()
     @app_commands.autocomplete(identities=identity_autocomplete)
     async def identity(
         self, interaction: discord.Interaction, identities: str, uptie_level: int = 4
     ):
-        """Test only"""
+        """Limbus Identity Data"""
         data = await get_site_request_logged_in(
             f"https://malcute.aeonmoon.page/api/limbus2/identity_data/{identities}"
         )
@@ -128,12 +174,82 @@ class Limbus(commands.Cog):
     async def ego_limbus(
         self, interaction: discord.Interaction, ego: str, uptie_level: int = 4
     ):
-        """Test only"""
+        """Ego Limbus Data"""
         data = await get_site_request_logged_in(
             f"https://malcute.aeonmoon.page/api/limbus2/ego_data/{ego}"
         )
         await ego_data_analysis(interaction, data, uptie_level)
 
+    @app_commands.command()
+    @app_commands.autocomplete(gift=gift_autocomplete)
+    async def gift_limbus(
+        self, interaction: discord.Interaction, gift: str
+    ):
+        """Limbus Gift"""
+        battleKeyWord = battle_keyword_dict()
+        data = self.gift_data[int(gift)]
+        embed = discord.Embed()
+        embed.title = data.get("name","")
+        temp_description = data.get("desc","")
+        for word, en_name in battleKeyWord.items():
+            temp_description = temp_description.replace(word, en_name)
+
+        embed.description = temp_description
+        temp_gift_id = gift
+        file = None
+        if os.path.exists(f"./data/limbus_images/gift_art/{temp_gift_id}.png"):
+            image_path = f"./data/limbus_images/gift_art/{temp_gift_id}.png"
+        elif len(temp_gift_id) > 4:
+            temp_gift_id = temp_gift_id[1:]
+            image_path = f"./data/limbus_images/gift_art/{temp_gift_id}.png"
+        if os.path.exists(f"./data/limbus_images/gift_art/{temp_gift_id}.png"):
+            embed.set_image(url="attachment://image.png")
+            file = discord.File(image_path, filename="image.png")
+        await interaction.response.defer()
+        if file:
+            await interaction.followup.send(embed=embed, file = file)
+        else:
+            await interaction.followup.send(embed=embed)
+
+
+    @app_commands.command()
+    @app_commands.autocomplete(observation=observation_autocomplete)
+    async def observation_limbus(
+        self, interaction: discord.Interaction, observation: str
+    ):
+        """Abnormality Observations from Limbus"""
+        data = self.observation_data[int(observation)]
+        embed = discord.Embed()
+        embed.title = data.get("name","")
+        desc = data.get("desc","")
+        clue = data.get("clue","")
+        obs = []
+        for stories in data.get("storyList",[]):
+            obs.append("\n**"+str(stories.get("level","0"))+"**")
+            obs.append(stories.get("story",""))
+        obs = '\n'.join(obs)
+        description = f"""Desc: {desc}
+Clue: {clue}
+{obs}
+"""
+        if len(description) > 4095:
+            description = description[:4096]
+        embed.description = description
+        file = None
+        if os.path.exists(f"./data/limbus_images/portraits/{observation}_portrait.png"):
+            image_path = f"./data/limbus_images/portraits/{observation}_portrait.png"
+            embed.set_image(url="attachment://image.png")
+            file = discord.File(image_path, filename="image.png")
+        await interaction.response.defer()
+        if file:
+            await interaction.followup.send(embed=embed, file = file)
+        else:
+            await interaction.followup.send(embed=embed)
+
+#AbnormalitiesGuide
+#EN_EGOgift_mirrordungeon
+# Need gift images
+# need abno images
 
 async def setup(bot):
     await bot.add_cog(Limbus(bot))
