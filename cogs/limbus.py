@@ -5,7 +5,7 @@ import discord
 from rapidfuzz import fuzz, process
 import json
 import os
-
+import re
 # import tweepy
 from utils.cardScrape import get_site_content_json, get_site_request_logged_in
 from CustomClasses.limbusData import (
@@ -195,6 +195,7 @@ class Limbus(commands.Cog):
         temp_description = data.get("desc", "")
         for word, en_name in battleKeyWord.items():
             temp_description = temp_description.replace(word, en_name)
+        temp_description = re.sub("<[^>]+>", "**", temp_description)
 
         embed.description = temp_description
         temp_gift_id = gift
@@ -236,6 +237,7 @@ Clue: {clue}
 """
         if len(description) > 4095:
             description = description[:4096]
+        description = re.sub("<[^>]+>", "**", description)
         embed.description = description
         file = None
         if os.path.exists(f"./data/limbus_images/portraits/{observation}_portrait.png"):
