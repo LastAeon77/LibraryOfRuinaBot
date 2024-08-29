@@ -93,6 +93,8 @@ class Limbus(commands.Cog):
         # Abnormality Observations
         self.observation_data, self.observation_num = self.observation_dict_generate()
 
+        self.battlekeyword_data, self.battlekeyword_num = self.battlekeyword_dict_generate()
+
     def observation_dict_generate(self):
         observation_data = {}
         for file in os.listdir("./data/Limbus_Data"):
@@ -105,6 +107,19 @@ class Limbus(commands.Cog):
         for k, v in observation_data.items():
             observe_num.append((k, v.get("name", "") + " " + v.get("codeName", "")))
         return [observation_data.copy(), observe_num]
+    
+    def battlekeyword_dict_generate(self):
+        battlekeyword_data = {}
+        for file in os.listdir("./data/Limbus_Data"):
+            if file.startswith("EN_BattleKeywords"):
+                with open(f"./data/Limbus_Data/{file}", encoding="utf-8") as f:
+                    data = json.load(f)
+                    for dicts in data.get("dataList", []):
+                        battlekeyword_data[dicts.get("id", "0")] = dicts
+        battle_keyword_num = []
+        for k, v in battlekeyword_data.items():
+            battle_keyword_num.append((k, v.get("name", "")))
+        return [battlekeyword_data.copy(), battle_keyword_num]
 
     async def fuzzy_search(self, query, choices):
         best_match = process.extractOne(
@@ -156,6 +171,18 @@ class Limbus(commands.Cog):
         current: str,
     ):
         egos = self.observation_num
+        return [
+            discord.app_commands.Choice(name=ego[1], value=str(ego[0]))
+            for ego in egos
+            if current.lower() in ego[1].lower()
+        ]
+
+    async def battlekeyword_autocomplete(
+        self,
+        interaction: discord.Interaction,
+        current: str,
+    ):
+        egos = self.battlekeyword_num
         return [
             discord.app_commands.Choice(name=ego[1], value=str(ego[0]))
             for ego in egos
@@ -244,6 +271,35 @@ Clue: {clue}
             image_path = f"./data/limbus_images/portraits/{observation}_portrait.png"
             embed.set_image(url="attachment://image.png")
             file = discord.File(image_path, filename="image.png")
+        view = DeleteEmbedView(interaction.user, interaction.message)
+        await interaction.response.defer()
+        if file:
+            await interaction.followup.send(embed=embed, file=file, view=view)
+        else:
+            await interaction.followup.send(embed=embed, view=view)
+
+    @app_commands.command()
+    @app_commands.autocomplete(battle_keyword=battlekeyword_autocomplete)
+    async def keyword_limbus(
+        self, interaction: discord.Interaction, battle_keyword: str
+    ):
+        """Abnormality Observations from Limbus"""
+
+        data = self.battlekeyword_data.get(battle_keyword)
+        print(data)
+        embed = discord.Embed()
+        embed.title = data.get("name", "")
+        desc = data.get("desc", "")
+        description = f"""{desc}"""
+        if len(description) > 4095:
+            description = description[:4096]
+        description = re.sub("<[^>]+>", "**", description)
+        embed.description = description
+        file = None
+        # if os.path.exists(f"./data/limbus_images/portraits/{observation}_portrait.png"):
+        #     image_path = f"./data/limbus_images/portraits/{observation}_portrait.png"
+        #     embed.set_image(url="attachment://image.png")
+        #     file = discord.File(image_path, filename="image.png")
         view = DeleteEmbedView(interaction.user, interaction.message)
         await interaction.response.defer()
         if file:
