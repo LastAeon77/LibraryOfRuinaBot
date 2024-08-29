@@ -13,8 +13,8 @@ SIN_DICT = {
     "AZURE": "Gloom",
     "INDIGO": "Pride",
     "VIOLET": "Envy",
-    "WHITE": "White",
-    "BLACK": "Black",
+    "WHITE": "Madness",
+    "BLACK": "Angst",
 }
 COLOR_DICT_SIN = {
     "CRIMSON": discord.Color.red(),
@@ -33,6 +33,7 @@ RESIST_NAMING = {
     2: "Fatal",
     0.75: "Endure",
     1.25: "Weak",
+    0: "Immune",
 }
 attack_type_dict = {
     "HIT": "Blunt",
@@ -104,7 +105,8 @@ def skill_description(skill_data: dict, skill_effect: dict, skill_num):
     for coins in skill_effect["coin_descs"]:
         curr_index = coins.get("action_index")
         for desc in coins.get("descs", []):
-            coin_desc.append(f"**{curr_index}**: " + desc)
+            if desc != None:
+                coin_desc.append(f"**{curr_index}**: " + desc)
     coin_desc = "\n".join(coin_desc)
     description = f"""
 **Name**: {name}
@@ -457,15 +459,7 @@ async def ego_data_analysis(
             )
         )
     buttons = ButtonEmbedView(interaction.user, embed_list)
-
     await interaction.response.send_message(
-        # content = image_full_art_path ,
         embed=embed,
         view=buttons,
     )
-
-
-# with open("limbus_identity_data_test.json", encoding="utf-8") as f:
-#     data = json.load(f)
-
-# identity_data_analysis(data,2,45)

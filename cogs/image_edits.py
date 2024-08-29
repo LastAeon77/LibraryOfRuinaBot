@@ -122,8 +122,6 @@ class ImageEdits(commands.Cog):
                     )
                     with open("tmp/pat.gif", "rb") as f:
                         await ctx.send(content=None, file=discord.File(f))
-                    # os.remove("tmp/tmp2.png")
-                    # os.remove("tmp/pat.gif")
             except discord.ext.commands.errors.BadArgument:
                 await ctx.send("That person doesn't exist!")
 
