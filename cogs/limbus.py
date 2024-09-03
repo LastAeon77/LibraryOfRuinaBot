@@ -192,28 +192,29 @@ class Limbus(commands.Cog):
     @app_commands.command()
     @app_commands.autocomplete(identities=identity_autocomplete)
     async def identity(
-        self, interaction: discord.Interaction, identities: str, uptie_level: int = 4
+        self, interaction: discord.Interaction, identities: str, uptie_level: int = 4, private : bool = False
     ):
         """Limbus Identity Data"""
         data = await get_site_request_logged_in(
             f"https://malcute.aeonmoon.page/api/limbus2/identity_data/{identities}"
         )
-        await identity_data_analysis(interaction, data, uptie_level, 45)
+        
+        await identity_data_analysis(interaction, data, uptie_level, 45,private)
 
     @app_commands.command()
     @app_commands.autocomplete(ego=ego_autocomplete)
     async def ego_limbus(
-        self, interaction: discord.Interaction, ego: str, uptie_level: int = 4
+        self, interaction: discord.Interaction, ego: str, uptie_level: int = 4,private: bool = False
     ):
         """Ego Limbus Data"""
         data = await get_site_request_logged_in(
             f"https://malcute.aeonmoon.page/api/limbus2/ego_data/{ego}"
         )
-        await ego_data_analysis(interaction, data, uptie_level)
+        await ego_data_analysis(interaction, data, uptie_level, private)
 
     @app_commands.command()
     @app_commands.autocomplete(gift=gift_autocomplete)
-    async def gift_limbus(self, interaction: discord.Interaction, gift: str):
+    async def gift_limbus(self, interaction: discord.Interaction, gift: str, private : bool = False):
         """Limbus Gift"""
         battleKeyWord = battle_keyword_dict()
         data = self.gift_data[int(gift)]
@@ -236,16 +237,16 @@ class Limbus(commands.Cog):
             embed.set_image(url="attachment://image.png")
             file = discord.File(image_path, filename="image.png")
         view = DeleteEmbedView(interaction.user, interaction.message)
-        await interaction.response.defer()
+        await interaction.response.defer(ephemeral=private)
         if file:
-            await interaction.followup.send(embed=embed, file=file, view=view)
+            await interaction.followup.send(embed=embed, file=file, view=view,ephemeral=private)
         else:
-            await interaction.followup.send(embed=embed, view=view)
+            await interaction.followup.send(embed=embed, view=view, ephemeral=private)
 
     @app_commands.command()
     @app_commands.autocomplete(observation=observation_autocomplete)
     async def observation_limbus(
-        self, interaction: discord.Interaction, observation: str
+        self, interaction: discord.Interaction, observation: str, private : bool = False
     ):
         """Abnormality Observations from Limbus"""
         data = self.observation_data[int(observation)]
@@ -272,16 +273,16 @@ Clue: {clue}
             embed.set_image(url="attachment://image.png")
             file = discord.File(image_path, filename="image.png")
         view = DeleteEmbedView(interaction.user, interaction.message)
-        await interaction.response.defer()
+        await interaction.response.defer(ephemeral=private)
         if file:
-            await interaction.followup.send(embed=embed, file=file, view=view)
+            await interaction.followup.send(embed=embed, file=file, view=view, ephemeral=private)
         else:
-            await interaction.followup.send(embed=embed, view=view)
+            await interaction.followup.send(embed=embed, view=view, ephemeral=private)
 
     @app_commands.command()
     @app_commands.autocomplete(battle_keyword=battlekeyword_autocomplete)
     async def keyword_limbus(
-        self, interaction: discord.Interaction, battle_keyword: str
+        self, interaction: discord.Interaction, battle_keyword: str,private : bool= False
     ):
         """Abnormality Observations from Limbus"""
 
@@ -301,11 +302,11 @@ Clue: {clue}
         #     embed.set_image(url="attachment://image.png")
         #     file = discord.File(image_path, filename="image.png")
         view = DeleteEmbedView(interaction.user, interaction.message)
-        await interaction.response.defer()
+        await interaction.response.defer(ephemeral=private)
         if file:
-            await interaction.followup.send(embed=embed, file=file, view=view)
+            await interaction.followup.send(embed=embed, file=file, view=view, ephemeral=private)
         else:
-            await interaction.followup.send(embed=embed, view=view)
+            await interaction.followup.send(embed=embed, view=view, ephemeral=private)
 
 
 # AbnormalitiesGuide

@@ -147,7 +147,7 @@ def skill_description(skill_data: dict, skill_effect: dict, skill_num):
 
 
 class OneButton(discord.ui.Button):
-    def __init__(self, name, description, image_path, color, image_file):
+    def __init__(self, name, description, image_path, color, image_file,private):
         super().__init__(style=discord.ButtonStyle.secondary, label=name)
         self.name = name
         self.description = description
@@ -155,6 +155,7 @@ class OneButton(discord.ui.Button):
         self.color = color
         self.label = name
         self.image_file = image_file
+        self.private = private
 
     async def callback(self, interaction: discord.Interaction):
         view = self.view
@@ -163,19 +164,20 @@ class OneButton(discord.ui.Button):
         embed.description = self.description
         embed.set_image(url=self.image_file)
         embed.color = self.color
-        await interaction.response.defer()
-        await interaction.message.edit(
+        await interaction.response.defer(ephemeral=self.private)
+        await interaction.edit_original_response(
             embed=embed,
             view=view,
         )
 
 
 class ButtonEmbedView(discord.ui.View):
-    def __init__(self, author, embeds_list, message=None):
+    def __init__(self, author, embeds_list,private = False, message=None):
         super().__init__()
         self.author = author
         self.message = message
         self.embeds_list = embeds_list  # [name,desc,image_file_path,color]
+        self.private = private
 
         # Dynamically create and add buttons based on button_data
         for name, description, image_path, color in self.embeds_list:
@@ -185,17 +187,19 @@ class ButtonEmbedView(discord.ui.View):
                 image_path=image_path,
                 color=color,
                 image_file=image_path,
+                private=self.private
             )
             self.add_item(button)
 
     @discord.ui.button(label="Delete", style=discord.ButtonStyle.red)
     async def delete(self, interaction: discord.Interaction, button: discord.ui.Button):
         if interaction.user == self.author:
-            await interaction.message.delete()
+            if self.private == False:
+                await interaction.message.delete()
 
 
 async def identity_data_analysis(
-    interaction: discord.Interaction, data_in_json, uptie_level, max_level=45
+    interaction: discord.Interaction, data_in_json, uptie_level, max_level=45,private = False
 ):
     skill_effect = {}
     skill_data = {}
@@ -359,16 +363,17 @@ async def identity_data_analysis(
             )
         )
 
-    buttons = ButtonEmbedView(interaction.user, embed_list)
+    buttons = ButtonEmbedView(interaction.user, embed_list,private=private)
 
     await interaction.response.send_message(
         embed=embed,
         view=buttons,
+        ephemeral=private
     )
 
 
 async def ego_data_analysis(
-    interaction: discord.Interaction, data_in_json, uptie_level
+    interaction: discord.Interaction, data_in_json, uptie_level=4, private = False
 ):
     awakeningSkill = None
     corrosionSkill = None
@@ -458,8 +463,9 @@ async def ego_data_analysis(
                 skill_num=1,
             )
         )
-    buttons = ButtonEmbedView(interaction.user, embed_list)
+    buttons = ButtonEmbedView(interaction.user, embed_list,private=private)
     await interaction.response.send_message(
         embed=embed,
         view=buttons,
+        ephemeral=private
     )
