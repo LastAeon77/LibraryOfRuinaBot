@@ -5,6 +5,7 @@ import json
 import re
 
 PRIME_LINK = "https://malcute.aeonmoon.page"
+EMOJI_LIMBUS_HEAD = "<:limbusheads:1280657716871692472>"
 SIN_DICT = {
     "CRIMSON": "Wrath",
     "SCARLET": "Lust",
@@ -96,6 +97,8 @@ def skill_description(skill_data: dict, skill_effect: dict, skill_num):
             stuff = f" -{coins.get('scale','0')}"
             max_final -= int(coins.get("scale", "0"))
         coin_roll_data.append(stuff)
+    coin_total = len(coin_roll_data)
+    coin_total_str = EMOJI_LIMBUS_HEAD * coin_total
     coin_roll_data = ", ".join(coin_roll_data)
     ### Skill Effect
     name = skill_effect.get("name", "Unknown")
@@ -110,6 +113,7 @@ def skill_description(skill_data: dict, skill_effect: dict, skill_num):
     coin_desc = "\n".join(coin_desc)
     description = f"""
 **Name**: {name}
+ temporary_69420_str
 **Damage/Defense Type**: {atk_type} {def_type}
 **Attribute**: {attribute}
 **Target Type**: {skill_target_type}
@@ -133,7 +137,7 @@ def skill_description(skill_data: dict, skill_effect: dict, skill_num):
         description = description.replace(word, en_name)
 
     description = re.sub("<[^>]+>", "", description)
-
+    description = description.replace("temporary_69420_str",coin_total_str)
     image_full_art_path = None
     if icon_id == "":
         image_full_art_path = (

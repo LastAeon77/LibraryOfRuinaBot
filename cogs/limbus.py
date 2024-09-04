@@ -308,6 +308,11 @@ Clue: {clue}
         else:
             await interaction.followup.send(embed=embed, view=view, ephemeral=private)
 
+        
+    @app_commands.command()
+    async def emote_test(self,interaction: discord.Interaction):
+        await interaction.response.send_message("<:limbusheads:1280657716871692472>")
+
 
 # AbnormalitiesGuide
 # EN_EGOgift_mirrordungeon
