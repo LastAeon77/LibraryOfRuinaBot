@@ -95,6 +95,8 @@ class Limbus(commands.Cog):
 
         self.battlekeyword_data, self.battlekeyword_num = self.battlekeyword_dict_generate()
 
+        self.gift_tier_data = self.ego_gift_tier_generate()
+
     def observation_dict_generate(self):
         observation_data = {}
         for file in os.listdir("./data/Limbus_Data"):
@@ -120,6 +122,22 @@ class Limbus(commands.Cog):
         for k, v in battlekeyword_data.items():
             battle_keyword_num.append((k, v.get("name", "")))
         return [battlekeyword_data.copy(), battle_keyword_num]
+
+    def ego_gift_tier_generate(self):
+        gift_data = {}
+        for file in os.listdir("./data/Limbus_Data"):
+            if file.startswith("ego-gift"):
+                with open(f"./data/Limbus_Data/{file}", encoding="utf-8") as f:
+                    data = json.load(f)
+                    for dicts in data.get("list", []):
+                        tag = dicts.get("tag","???")
+                        if len(tag) == 1:
+                            tag = tag[0].lower().capitalize().replace("_",": ")
+                        gift_data[dicts.get("id", 0)] = tag
+                        for upgrade in dicts.get("upgradeDataList",[]):
+                            gift_data[upgrade.get("localizeID")] = tag
+
+        return gift_data.copy()
 
     async def fuzzy_search(self, query, choices):
         best_match = process.extractOne(
@@ -220,7 +238,12 @@ class Limbus(commands.Cog):
         data = self.gift_data[int(gift)]
         embed = discord.Embed()
         embed.title = data.get("name", "")
-        temp_description = data.get("desc", "")
+        gift_id = data.get("id", 9744)
+        tier = self.gift_tier_data.get(gift_id,"???")
+        temp_description = f"""
+{tier}
+{data.get("desc", "")}
+"""
         for word, en_name in battleKeyWord.items():
             temp_description = temp_description.replace(word, en_name)
         temp_description = re.sub("<[^>]+>", "**", temp_description)
