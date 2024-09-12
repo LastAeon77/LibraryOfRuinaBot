@@ -310,7 +310,6 @@ Clue: {clue}
         """Abnormality Observations from Limbus"""
 
         data = self.battlekeyword_data.get(battle_keyword)
-        print(data)
         embed = discord.Embed()
         embed.title = data.get("name", "")
         desc = data.get("desc", "")
@@ -341,6 +340,9 @@ Clue: {clue}
         data = await get_site_post_logged_in(
             f"https://malcute.aeonmoon.page/api/limbus2/story", {"search":arx}
         )
+        if data == "No Data Found":
+            await ctx.send("Search parameters too generic or does not exist.")
+            return
         data = json.loads(data)
         teller = '???'  # Default to unknown speaker
         if data.get('teller',False):
