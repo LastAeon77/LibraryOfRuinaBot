@@ -51,6 +51,26 @@ async def get_site_request_logged_in(currUrl, depth=0):
             elif resp.status == 401 and depth == 0:
                 await set_token()
                 return await get_site_request_logged_in(currUrl, 1)
+            
+async def get_site_post_logged_in(currUrl, body = {}, depth=0):
+    with open("./resources/tokens.json", "r") as f:
+        data = json.load(f)
+    if not data:
+        await set_token()
+    if data["access"] == "":
+        await set_token()
+    header = {
+        "Authorization": f"JWT {data['access']}",
+        "Content-Type": "application/json",
+        "accept": "application/json",
+    }
+    async with aiohttp.ClientSession() as session:
+        async with session.post(currUrl, headers=header,json=body) as resp:
+            if resp.status == 200:
+                return await resp.json()
+            elif resp.status == 401 and depth == 0:
+                await set_token()
+                return await get_site_post_logged_in(currUrl, 1)
 
 
 async def get_site_request(currUrl):

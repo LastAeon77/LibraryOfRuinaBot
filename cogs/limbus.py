@@ -7,7 +7,7 @@ import json
 import os
 import re
 # import tweepy
-from utils.cardScrape import get_site_content_json, get_site_request_logged_in
+from utils.cardScrape import get_site_content_json, get_site_request_logged_in, get_site_post_logged_in
 from CustomClasses.limbusData import (
     identity_data_analysis,
     ego_data_analysis,
@@ -331,11 +331,48 @@ Clue: {clue}
         else:
             await interaction.followup.send(embed=embed, view=view, ephemeral=private)
 
-        
     @app_commands.command()
     async def emote_test(self,interaction: discord.Interaction):
         await interaction.response.send_message("<:limbusheads:1280657716871692472>")
 
+    @commands.hybrid_command()
+    async def quote_limbus(self, ctx, *, arx: str):
+        await ctx.defer()
+        data = await get_site_post_logged_in(
+            f"https://malcute.aeonmoon.page/api/limbus2/story", {"search":arx}
+        )
+        data = json.loads(data)
+        teller = '???'  # Default to unknown speaker
+        if data.get('teller',False):
+            title = data.get('title', '???')
+            teller_name = data.get('teller', '???')
+            teller = f"{title} - {teller_name}".strip() if title else teller_name
+        elif data.get('model',False):
+            # Fallback to model information if no teller
+            name = data['model'].get('enname', '')
+            nickName = data['model'].get('enNickName', '')
+            teller = f"{nickName} - {name}".strip() if nickName else name
+
+
+        author = arx
+        description = f"""
+Chapter: {data.get('chapter_info','???')}
+Stage:{data.get('stage_info','???')}
+Stage Num: {data.get('stage_id','???')}
+Place:{data.get('stage_place','???')}
+Dialouge #{data.get('id_raw','???')}
+Speaker: {teller}
+----------Content-----------
+{data.get('content','-')}
+"""
+        embed = discord.Embed()
+        embed.set_author(name=author)
+        embed.description = description
+        delete_button = DeleteEmbedView(author=ctx.author)
+        await ctx.send(
+            embed=embed,
+            view=delete_button,
+        )
 
 # AbnormalitiesGuide
 # EN_EGOgift_mirrordungeon
