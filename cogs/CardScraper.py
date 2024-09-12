@@ -26,8 +26,9 @@ Rarity_dict = {
 }
 
 DECK_AND_DESIGN = 774890755679846400
+RUINA_DISCUSSION = 718294958573879350
 SOTC_DECK_AND_DESIGN = 975143319472599110
-
+RUINA_STAR_OF_THE_CITY = 925743312449708103
 
 class DeleteEmbedView(discord.ui.View):
     def __init__(self, author, message=None):
@@ -189,11 +190,6 @@ class searchCard(commands.Cog):
             soup = new_soup
 
         choices = []
-        DECK_AND_DESIGN = 774890755679846400
-        RUINA_DISCUSSION = 718294958573879350
-        SOTC_DECK_AND_DESIGN = 925743312449708103
-        RUINA_STAR_OF_THE_CITY = 925743312449708103
-
         def filter_data_no_spoiler(deck):
             if int(deck["highest_rank"]) < 6:
                 return True
