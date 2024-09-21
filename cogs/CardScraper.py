@@ -416,7 +416,7 @@ class searchCard(commands.Cog):
     @commands.command()
     async def interview(self, ctx):
         """Sends a list of past Project Moon Interviews"""
-        THIS_LINK = "https://malcute.aeonmoon.page/api/interview"
+        THIS_LINK = f"{LINK}/api/interview"
         data = await get_site_content_json(THIS_LINK)
         embed = discord.Embed()
         embed.set_author(name="Interviews")
@@ -426,7 +426,7 @@ class searchCard(commands.Cog):
         for datas in data:
             interview_name = datas["name"]
             number = datas["id"]
-            link = f"[Link Here](https://aeonmoon.vercel.app/interview/{number})"
+            link = f"[Link Here]({LINK}/interview/{number})"
             names += interview_name
             names += "\n"
             links_string += link
@@ -436,7 +436,7 @@ class searchCard(commands.Cog):
         embed.add_field(name="Name", value=names, inline=True)
         embed.add_field(name="Link", value=links_string, inline=True)
         embed.add_field(name="Date", value=posted_dates, inline=True)
-        embed.set_footer(text="Source: https://aeonmoon.vercel.app/interview")
+        embed.set_footer(text=f"Source: {LINK}/interview")
         await ctx.send(embed=embed)
 
     @commands.hybrid_command()

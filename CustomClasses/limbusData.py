@@ -43,7 +43,6 @@ attack_type_dict = {
     "PENETRATE": "Pierce",
     "ATTACK": "",
 }
-
 color_dict = {
     1: discord.Color.green(),
     2: discord.Color.red(),
@@ -60,12 +59,8 @@ with open("./data/Limbus_Data/EN_SkillTag.json", encoding="utf-8") as f:
 keyword_dict = keyword_dict["dataList"]
 for dicts in keyword_dict:
     BATTLEKEYWORD["[" + dicts.get("id", "") + "]"] = dicts.get("name", "")
-
-
 def battle_keyword_dict():
     return BATTLEKEYWORD
-
-
 def skill_description(skill_data: dict, skill_effect: dict, skill_num):
     def_type_dict = {
         "GUARD": "Guard",
@@ -468,6 +463,90 @@ async def ego_data_analysis(
             )
         )
     buttons = ButtonEmbedView(interaction.user, embed_list,private=private)
+    await interaction.response.send_message(
+        embed=embed,
+        view=buttons,
+        ephemeral=private
+    )
+
+
+def data_description_embed_generator(chapter_string,data,index):
+    embed = Embed()
+    print("lol")
+    print(f"{chapter_string} - {str(index)}")
+    embed.set_author(name=f"{chapter_string} - {str(index)}")
+    print("lol2")
+    teller = '???'  # Default to unknown speaker
+    if data.get('teller',False):
+        print("teller here")
+        title = data.get('title', '???')
+        teller_name = data.get('teller', '???')
+        teller = f"{title} - {teller_name}".strip() if title else teller_name
+    elif data.get('model',False):
+        print("not teller here")
+        # Fallback to model information if no teller
+        name = data['model'].get('enname', '')
+        nickName = data['model'].get('enNickName', '')
+        teller = f"{nickName} - {name}".strip() if nickName else name
+    print(teller)
+    description = f"""
+Place:{data.get('place','???')}
+Dialouge #{data.get('id_raw','???')}
+Speaker: {teller}
+----------Content-----------
+{data.get('content','-')}
+"""
+    embed.description = description
+    return embed
+
+class ButtonStoryEmbedView(discord.ui.View):
+    def __init__(self, author, data_list, chapter_string,curr_index,private = False, message=None):
+        super().__init__()
+        self.author = author
+        self.message = message
+        self.chapter_string = chapter_string
+        self.curr_index = curr_index
+        self.data_list = data_list  # [name,desc,image_file_path,color]
+        self.private = private
+    @discord.ui.button(label="Delete", style=discord.ButtonStyle.red)
+    async def delete(self, interaction: discord.Interaction, button: discord.ui.Button):
+        if interaction.user == self.author:
+            if self.private == False:
+                await interaction.message.delete()
+    @discord.ui.button(label="-10", style=discord.ButtonStyle.red)
+    async def minus_ten_story(self, interaction: discord.Interaction, button: discord.ui.Button):
+        if interaction.user == self.author:
+            self.curr_index = max(0,self.curr_index-10)
+            embed = data_description_embed_generator(self.chapter_string,self.data_list[self.curr_index],self.curr_index)
+            await interaction.response.defer()
+            await interaction.message.edit(embed=embed)
+    @discord.ui.button(label="-1", style=discord.ButtonStyle.red)
+    async def minus_one_story(self, interaction: discord.Interaction, button: discord.ui.Button):
+        if interaction.user == self.author:
+            self.curr_index = max(0,self.curr_index-1)
+            embed = data_description_embed_generator(self.chapter_string,self.data_list[self.curr_index],self.curr_index)
+            await interaction.response.defer()
+            await interaction.message.edit(embed=embed)    
+    @discord.ui.button(label="+1", style=discord.ButtonStyle.red)
+    async def plus_one_story(self, interaction: discord.Interaction, button: discord.ui.Button):
+        if interaction.user == self.author:
+            self.curr_index = min(len(self.data_list)-1,self.curr_index+1)
+            embed = data_description_embed_generator(self.chapter_string,self.data_list[self.curr_index],self.curr_index)
+            await interaction.response.defer()
+            await interaction.message.edit(embed=embed)    
+    @discord.ui.button(label="+10", style=discord.ButtonStyle.red)
+    async def plus_ten_story(self, interaction: discord.Interaction, button: discord.ui.Button):
+        if interaction.user == self.author:
+            self.curr_index = min(len(self.data_list)-1,self.curr_index+10)
+            embed = data_description_embed_generator(self.chapter_string,self.data_list[self.curr_index],self.curr_index)
+            await interaction.response.defer()
+            await interaction.message.edit(embed=embed)
+
+async def story_data_display(
+    interaction: discord.Interaction,chapter_string, data_in_json, index:int, private = False
+):
+    buttons = ButtonStoryEmbedView(author=interaction.user,data_list=data_in_json,curr_index=index, chapter_string=chapter_string)
+    embed = data_description_embed_generator(chapter_string=chapter_string,data=data_in_json[index],index=index)
     await interaction.response.send_message(
         embed=embed,
         view=buttons,

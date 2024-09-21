@@ -12,6 +12,7 @@ from CustomClasses.limbusData import (
     identity_data_analysis,
     ego_data_analysis,
     battle_keyword_dict,
+    story_data_display
 )
 
 
@@ -96,6 +97,18 @@ class Limbus(commands.Cog):
         self.battlekeyword_data, self.battlekeyword_num = self.battlekeyword_dict_generate()
 
         self.gift_tier_data = self.ego_gift_tier_generate()
+        
+        self.en_chapter_node_list = self.EnChapterNodeList_dict_generate()
+
+    def EnChapterNodeList_dict_generate(self):
+        with open(f"./data/ENChapterNodeList.json", encoding="utf-8") as f:
+            data = json.load(f)
+        observe_num = []
+        ids = []
+        for d in data:
+            observe_num.append(f"{d.get('chapterNumber')}-{d.get('node_index')} {d.get('chapter')} {d.get('title')} {d.get('stageDetail')}")
+            ids.append(f"{d.get('story_theather_list_node_id')}_{d.get('node_index')}")
+        return [ids,observe_num]
 
     def observation_dict_generate(self):
         observation_data = {}
@@ -207,6 +220,18 @@ class Limbus(commands.Cog):
             if current.lower() in ego[1].lower()
         ]
 
+    async def en_chapter_node_list_autocomplete(
+        self,
+        interaction: discord.Interaction,
+        current: str,
+    ):
+        egos = self.en_chapter_node_list
+        ego_pair = zip(egos[0], egos[1])
+        return [
+            discord.app_commands.Choice(name=ego[1][:100], value=ego[0])
+            for ego in ego_pair
+            if current.lower() in ego[1].lower()
+        ]
     @app_commands.command()
     @app_commands.autocomplete(identities=identity_autocomplete)
     async def identity(
@@ -334,14 +359,13 @@ Clue: {clue}
     async def emote_test(self,interaction: discord.Interaction):
         await interaction.response.send_message("<:limbusheads:1280657716871692472>")
 
-    @commands.hybrid_command()
-    async def quote_limbus(self, ctx, *, arx: str):
-        await ctx.defer()
+    @app_commands.command()
+    async def quote_limbus(self, interaction: discord.Interaction, arx: str):
         data = await get_site_post_logged_in(
             f"https://malcute.aeonmoon.page/api/limbus2/story", {"search":arx}
         )
         if data == "No Data Found":
-            await ctx.send("Search parameters too generic or does not exist.")
+            await interaction.response.send_message("Search parameters too generic or does not exist. (Message will self destruct)",delete_after=6)
             return
         data = json.loads(data)
         teller = '???'  # Default to unknown speaker
@@ -370,12 +394,40 @@ Speaker: {teller}
         embed = discord.Embed()
         embed.set_author(name=author)
         embed.description = description
-        delete_button = DeleteEmbedView(author=ctx.author)
-        await ctx.send(
+        delete_button = DeleteEmbedView(author=interaction.user)
+        await interaction.response.send_message(
             embed=embed,
             view=delete_button,
         )
 
+    @app_commands.command()
+    @app_commands.autocomplete(stage_name=en_chapter_node_list_autocomplete)
+    async def limbus_story_search(
+        self, interaction: discord.Interaction, stage_name: str,private : bool= False
+    ):
+        """Abnormality Observations from Limbus"""
+        stage_parts = stage_name.split("_")
+        node_id = int(stage_parts[0])
+        node_index = int(stage_parts[1])
+        data = await get_site_post_logged_in(
+            f"https://malcute.aeonmoon.page/api/limbus2/story_query", {"node_id":node_id, "node_index":node_index}
+        )
+        await story_data_display(interaction,"test_chapter",data,0,private=private)
+
+
+    # @app_commands.command()
+    # @app_commands.autocomplete(stage_name=en_chapter_node_list_autocomplete)
+    # async def story_search_by_node(
+    #     self, interaction: discord.Interaction, stage_name: str,private : bool= False
+    # ):
+    #     """Abnormality Observations from Limbus"""
+    #     stage_parts = stage_name.split("_")
+    #     node_id = int(stage_parts[0])
+    #     node_index = int(stage_parts[1])
+    #     data = await get_site_post_logged_in(
+    #         f"https://malcute.aeonmoon.page/api/limbus2/story_query", {"node_id":node_id, "node_index":node_index}
+    #     )
+    #     await story_data_display(interaction,"test_chapter",data,0,private=private)
 # AbnormalitiesGuide
 # EN_EGOgift_mirrordungeon
 # Need gift images

@@ -68,9 +68,9 @@ async def get_site_post_logged_in(currUrl, body = {}, depth=0):
         async with session.post(currUrl, headers=header,json=body) as resp:
             if resp.status == 200:
                 return await resp.json()
-            elif resp.status == 401 and depth == 0:
+            elif resp.status == 401 and depth < 2:
                 await set_token()
-                return await get_site_post_logged_in(currUrl, 1)
+                return await get_site_post_logged_in(currUrl, body ,depth+1)
 
 
 async def get_site_request(currUrl):
