@@ -472,23 +472,17 @@ async def ego_data_analysis(
 
 def data_description_embed_generator(chapter_string,data,index):
     embed = Embed()
-    print("lol")
-    print(f"{chapter_string} - {str(index)}")
     embed.set_author(name=f"{chapter_string} - {str(index)}")
-    print("lol2")
     teller = '???'  # Default to unknown speaker
     if data.get('teller',False):
-        print("teller here")
         title = data.get('title', '???')
         teller_name = data.get('teller', '???')
         teller = f"{title} - {teller_name}".strip() if title else teller_name
     elif data.get('model',False):
-        print("not teller here")
         # Fallback to model information if no teller
         name = data['model'].get('enname', '')
         nickName = data['model'].get('enNickName', '')
         teller = f"{nickName} - {name}".strip() if nickName else name
-    print(teller)
     description = f"""
 Place:{data.get('place','???')}
 Dialouge #{data.get('id_raw','???')}

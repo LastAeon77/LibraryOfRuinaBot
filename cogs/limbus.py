@@ -100,6 +100,8 @@ class Limbus(commands.Cog):
         
         self.en_chapter_node_list = self.EnChapterNodeList_dict_generate()
 
+        
+
     def EnChapterNodeList_dict_generate(self):
         with open(f"./data/ENChapterNodeList.json", encoding="utf-8") as f:
             data = json.load(f)
@@ -412,7 +414,12 @@ Speaker: {teller}
         data = await get_site_post_logged_in(
             f"https://malcute.aeonmoon.page/api/limbus2/story_query", {"node_id":node_id, "node_index":node_index}
         )
-        await story_data_display(interaction,"test_chapter",data,0,private=private)
+        chapter_id, chapter_observe_num = self.en_chapter_node_list
+        final_stage_name = "Unknown"
+        for i in range(0,len(chapter_observe_num)):
+            if chapter_observe_num[i] == stage_name:
+                final_stage_name = chapter_id[i]
+        await story_data_display(interaction,final_stage_name,data,0,private=private)
 
 
     # @app_commands.command()
