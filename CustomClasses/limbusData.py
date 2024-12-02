@@ -14,8 +14,8 @@ SIN_DICT = {
     "AZURE": "Gloom",
     "INDIGO": "Pride",
     "VIOLET": "Envy",
-    "WHITE": "Madness",
-    "BLACK": "Angst",
+    "WHITE": "",
+    "BLACK": "",
 }
 COLOR_DICT_SIN = {
     "CRIMSON": discord.Color.red(),
@@ -403,10 +403,11 @@ async def ego_data_analysis(
     egoType = data_in_json.get("egoType", "")
     resist = []
     for i in data_in_json.get("attribute_resist", []):
-        temp_type = SIN_DICT.get(i.get("type"))
-        temp_atk_value = RESIST_NAMING.get(i.get("value"), "Unknown")
-        temp = f"{temp_type}: {temp_atk_value}({i.get('value')})"
-        resist.append(temp)
+        if i.get("type") != "WHITE" and i.get("type") != "BLACK":
+            temp_type = SIN_DICT.get(i.get("type"))
+            temp_atk_value = RESIST_NAMING.get(i.get("value"), "Unknown")
+            temp = f"{temp_type}: {temp_atk_value}({i.get('value')})"
+            resist.append(temp)
     resist = ", ".join(resist)
     requirement = []
     for i in data_in_json.get("requirement", []):

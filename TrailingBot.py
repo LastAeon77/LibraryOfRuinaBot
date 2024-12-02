@@ -18,6 +18,44 @@ with open("resources/settings.json", "r") as f:
 
 bot.UPDATE_NOTICE = ""
 
+dynamic_commands = {}
+dynamic_commands_lock = asyncio.Lock()
+# Function to add a new dynamic command
+def add_dynamic_command(name, image_url):
+    async def dynamic_command(ctx):
+        await ctx.send(image_url)
+
+    # Add the command to the bot
+    bot.add_command(commands.Command(dynamic_command, name=name))
+    dynamic_commands[name] = image_url
+
+# Add a command to create new commands dynamically
+@bot.command()
+async def addcmd(ctx, command_name: str, image_url: str):
+    if ctx.message.author.id == bot.config["discord"]["owner"]:
+        if command_name in dynamic_commands:
+            await ctx.send(f"The command `{command_name}` already exists.")
+        else:
+            add_dynamic_command(command_name, image_url)
+            await ctx.send(f"Command `{command_name}` has been added!")
+            await command_save()
+        
+
+async def command_load():
+    async with dynamic_commands_lock:
+        with open("./data/custom_commands.json",'r') as f:
+            try:
+                curr_data = json.loads(f.read())
+                dynamic_commands = curr_data
+                for k,v in dynamic_commands.items():
+                    add_dynamic_command(k,v)
+            except Exception as e:
+                print(f"Error saving commands: {e}")
+
+async def command_save():
+    async with dynamic_commands_lock:
+        with open("./data/custom_commands.json",'w') as f:
+            f.write(json.dumps(dynamic_commands))
 
 @bot.event
 async def on_ready():
@@ -27,7 +65,11 @@ async def on_ready():
     print("Logged in as")
     print(bot.user.name)
     print("------")
+    await command_load()
 
+@bot.command()
+async def custom_cmds(ctx):
+    await ctx.send("``` \n"+ json.dumps(list(dynamic_commands.keys())) + "```")
 
 @bot.command()
 async def bestGirl(ctx, arx: str, arx2: str):
