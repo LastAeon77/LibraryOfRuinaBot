@@ -34,11 +34,10 @@ def add_dynamic_command(name, image_url):
 async def addcmd(ctx, command_name: str, image_url: str):
     if ctx.message.author.id == bot.config["discord"]["owner"]:
         if command_name in dynamic_commands:
-            await ctx.send(f"The command `{command_name}` already exists.")
-        else:
-            add_dynamic_command(command_name, image_url)
-            await ctx.send(f"Command `{command_name}` has been added!")
-            await command_save()
+            bot.remove_command(command_name)
+        add_dynamic_command(command_name, image_url)
+        await ctx.send(f"Command `{command_name}` has been added!")
+        await command_save()
         
 
 async def command_load():
