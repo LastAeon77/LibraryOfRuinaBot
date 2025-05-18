@@ -148,7 +148,7 @@ def skill_description(skill_data: dict, skill_effect: dict, skill_num):
 class OneButton(discord.ui.Button):
     def __init__(self, name, description, image_path, color, image_file,private):
         super().__init__(style=discord.ButtonStyle.secondary, label=name)
-        self.name = name
+        self.name = name[:32]
         self.description = description
         self.image_path = image_path
         self.color = color

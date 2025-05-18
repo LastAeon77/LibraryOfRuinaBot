@@ -1,4 +1,5 @@
 import discord
+from discord import app_commands
 from discord.ext import commands
 import json
 import random
@@ -7,10 +8,12 @@ import logging
 from logging.handlers import RotatingFileHandler
 import asyncio
 from discord import app_commands
+from CustomClasses.API import malkTalk
 
 intents = discord.Intents.all()
 intents.members = True
 bot = commands.Bot(command_prefix=commands.when_mentioned_or("?"), intents=intents)
+SHUTDOWN = False
 # bot.synced = False
 
 with open("resources/settings.json", "r") as f:
@@ -55,6 +58,7 @@ async def command_save():
     async with dynamic_commands_lock:
         with open("./data/custom_commands.json",'w') as f:
             f.write(json.dumps(dynamic_commands))
+
 
 @bot.event
 async def on_ready():
@@ -137,8 +141,9 @@ async def hhpp(ctx):
         r"https://m.place.naver.com/restaurant/1873966909/booking?query=%ED%96%84%ED%96%84%ED%8C%A1%ED%8C%A1"
     )
 
-
 async def main():
+    # logging.basicConfig(level=logging.INFO)
+    # discord.utils.setup_logging()
     async with bot:
         for file in os.listdir("cogs"):
             # file == limbus.py is for testing only

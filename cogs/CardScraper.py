@@ -38,7 +38,6 @@ class DeleteEmbedView(discord.ui.View):
 
     @discord.ui.button(label="Delete", style=discord.ButtonStyle.red)
     async def delete(self, interaction: discord.Interaction, button: discord.ui.Button):
-
         if interaction.user == self.author:
             await interaction.message.delete()
 

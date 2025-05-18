@@ -6,6 +6,13 @@ from rapidfuzz import fuzz, process
 import json
 import os
 import re
+from PIL import Image, ImageEnhance
+import requests
+from io import BytesIO
+import aiohttp
+import asyncio
+import random
+
 # import tweepy
 from utils.cardScrape import get_site_content_json, get_site_request_logged_in, get_site_post_logged_in
 from CustomClasses.limbusData import (
@@ -25,7 +32,7 @@ FILE_NAME_TWITTER = "./data/twitter_count.txt"
 FILE_NAME_YOUTUBE = "./data/youtube_count.txt"
 FILE_NAME_TIME = "./data/time_stamp.txt"
 IMAGE_LOCATION = "data/follower_graph.png"
-
+BETS_FILE = "./data/bet.json"
 
 class DeleteEmbedView(discord.ui.View):
     def __init__(self, author, message=None):
@@ -100,7 +107,45 @@ class Limbus(commands.Cog):
         
         self.en_chapter_node_list = self.EnChapterNodeList_dict_generate()
 
-        
+    def load_bets(self):
+        if not os.path.exists(BETS_FILE):
+            return {}
+        with open(BETS_FILE, "r") as f:
+            return json.load(f)
+
+    # Helper: Save bets
+    def save_bets(self, bets):
+        with open(BETS_FILE, "w") as f:
+            json.dump(bets, f, indent=4)
+
+    # @commands.command(name="xichun")
+    # async def xichun(self, ctx, choice: str):
+    #     choice = choice.lower()
+    #     if choice.lower() not in ["die", "live"]:
+    #         await ctx.send("Invalid choice. Use `?xichun die` or `?xichun live`.")
+    #         return
+
+    #     bets = self.load_bets()
+    #     user_id = str(ctx.author.id)
+    #     bets[user_id] = {
+    #         "username": ctx.author.name,
+    #         "bet": choice
+    #     }
+    #     self.save_bets(bets)
+
+    #     await ctx.send(f"{ctx.author.name} placed a bet on **{choice.upper()}**! Vote now to win 100 fake coins!")
+
+    @commands.command(name="xichun")
+    async def xichun(self, ctx):
+        bets = self.load_bets()
+        user_id = str(ctx.author.id)
+
+        if user_id not in bets:
+            await ctx.send(f"{ctx.author.name}, you did not place a bet.")
+            return
+
+        bet = bets[user_id].get("bet", "???").upper()
+        await ctx.send(f"{ctx.author.name}, your current bet is **{bet}**. All bets are closed.")
 
     def EnChapterNodeList_dict_generate(self):
         with open(f"./data/ENChapterNodeList.json", encoding="utf-8") as f:
@@ -178,7 +223,7 @@ class Limbus(commands.Cog):
         self,
         interaction: discord.Interaction,
         current: str,
-    ):
+        ):
         egos = self.ego_num
         return [
             discord.app_commands.Choice(name=ego[1], value=str(ego[0]))
@@ -190,7 +235,7 @@ class Limbus(commands.Cog):
         self,
         interaction: discord.Interaction,
         current: str,
-    ):
+     ):
         egos = self.gift_num
         return [
             discord.app_commands.Choice(name=ego[1], value=str(ego[0]))
@@ -420,6 +465,95 @@ Speaker: {teller}
             if chapter_observe_num[i] == stage_name:
                 final_stage_name = chapter_id[i]
         await story_data_display(interaction,final_stage_name,data,0,private=private)
+
+    @commands.command()
+    async def gacha(self,ctx):
+        message = await ctx.send("Currently wrangling the chains of mirrors...")
+
+        # Load the Twitter links JSON
+        with open("./data/Twitter_links.json", encoding="utf-8") as f:
+            twitter_dict = json.load(f)
+
+        # Get the gacha data
+        data = await get_site_content_json("https://malcute.aeonmoon.page/api/limbus2/gacha")
+        
+        # Generate the image
+        image_bytes = await self.stitch_images(data)
+
+        # If "Special", send random Twitter link first
+        if image_bytes == "Special":
+            random_pick = random.choice(twitter_dict)
+            await message.edit(content=f"{random_pick['title']} \n\n{random_pick['link']}")
+        
+        # Prepare the image file
+        file = discord.File(image_bytes, filename="stitched_image.png")
+        embed = discord.Embed(title="Stitched Image", description="Here is the generated image grid:")
+        embed.set_image(url="attachment://stitched_image.png")
+
+        # Send the embed separately with the image
+        await ctx.send(embed=embed, file=file)
+
+
+    def crop_image(self,img):
+        width, height = img.size
+        left = width // 4
+        right = width - (width // 4)
+        img = img.crop((left, 0, right, height))
+        return img
+
+    def enhance_image(self,img, rank):
+        if rank in [3, "EGO"]:
+            enhancer = ImageEnhance.Brightness(img)
+            img = enhancer.enhance(1.5)  # Make it shinier
+            enhancer = ImageEnhance.Contrast(img)
+            img = enhancer.enhance(1.3)
+        return img
+    
+    async def fetch_image(self, session, img_url):
+        async with session.get(img_url) as response:
+            return await response.read()
+
+    async def stitch_images(self,image_list, final_width=1521, final_height=856):
+        cols, rows = 5, 2  # 5 images per row, 2 rows
+        thumb_width, thumb_height = final_width // cols, final_height // rows
+        
+        images = []
+        base_url = f"{LINK}/django_static/Limbus_Data/"  # Example base URL
+        
+        async with aiohttp.ClientSession() as session:
+            tasks = [self.fetch_image(session, f"{base_url}{item['id']}.jpg") for item in image_list]
+            responses = await asyncio.gather(*tasks)
+
+        for item in image_list:
+            if(item['rank'] == "Special"):
+                return "Special"
+            if(item['rank'] != "Ego"):
+                img_url = f"{base_url}full_art/{item['id']}_normal.png"
+            else:
+                img_url = f"{base_url}ego_art/{item['id']}_cg.png"
+            rank = item['rank']
+            response = requests.get(img_url)
+            img = Image.open(BytesIO(response.content))
+            img = self.crop_image(img)
+            img = img.resize((thumb_width, thumb_height), Image.ANTIALIAS)
+            img = self.enhance_image(img, rank)
+            images.append(img)
+        
+        # Create a blank final image
+        final_image = Image.new("RGB", (final_width, final_height))
+        
+        # Paste images into grid
+        for index, img in enumerate(images):
+            x_offset = (index % cols) * thumb_width
+            y_offset = (index // cols) * thumb_height
+            final_image.paste(img, (x_offset, y_offset))
+        
+            # Convert to bytes for Discord
+        img_bytes = BytesIO()
+        final_image.save(img_bytes, format='PNG')
+        img_bytes.seek(0)
+        return img_bytes
+
 
 
     # @app_commands.command()
