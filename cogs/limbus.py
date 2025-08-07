@@ -12,14 +12,16 @@ from io import BytesIO
 import aiohttp
 import asyncio
 import random
-
 # import tweepy
 from utils.cardScrape import get_site_content_json, get_site_request_logged_in, get_site_post_logged_in
 from CustomClasses.limbusData import (
     identity_data_analysis,
     ego_data_analysis,
     battle_keyword_dict,
-    story_data_display
+    story_data_display,
+    SIN_DICT,
+    ATTACK_TYPE_DICT,
+    COLOR_DICT_SIN
 )
 
 
@@ -89,7 +91,13 @@ class Limbus(commands.Cog):
         # Gift Section
         self.gift_data = {}
         for file in os.listdir("./data/Limbus_Data"):
-            if file.startswith("EN_EGOgift_"):
+            if file.startswith("EN_EGOgift_StoryDungeon"):
+                with open(f"./data/Limbus_Data/{file}", encoding="utf-8") as f:
+                    data = json.load(f)
+                    for dicts in data.get("dataList", []):
+                        self.gift_data[dicts.get("id", 0)] = dicts
+                        self.gift_data[dicts.get("id",0)]["name"] = self.gift_data[dicts.get("id",0)]["name"] + " " + "(Story)"
+            elif file.startswith("EN_EGOgift_"):
                 with open(f"./data/Limbus_Data/{file}", encoding="utf-8") as f:
                     data = json.load(f)
                     for dicts in data.get("dataList", []):
@@ -191,11 +199,14 @@ class Limbus(commands.Cog):
                     data = json.load(f)
                     for dicts in data.get("list", []):
                         tag = dicts.get("tag","???")
+                        attributeType = dicts.get("attributeType", "NONE")
+                        keyword = dicts.get("keyword","None")
                         if len(tag) == 1:
                             tag = tag[0].lower().capitalize().replace("_",": ")
-                        gift_data[dicts.get("id", 0)] = tag
+                        tagsTotal =  (tag, attributeType,keyword)
+                        gift_data[dicts.get("id", 0)] = tagsTotal
                         for upgrade in dicts.get("upgradeDataList",[]):
-                            gift_data[upgrade.get("localizeID")] = tag
+                            gift_data[upgrade.get("localizeID")] = tagsTotal
 
         return gift_data.copy()
 
@@ -311,9 +322,19 @@ class Limbus(commands.Cog):
         embed = discord.Embed()
         embed.title = data.get("name", "")
         gift_id = data.get("id", 9744)
-        tier = self.gift_tier_data.get(gift_id,"???")
+        tierAndAttributeAndKeywordData = self.gift_tier_data.get(gift_id,("???","None","None"))
+        tier = tierAndAttributeAndKeywordData[0]
+        attribute = SIN_DICT.get(tierAndAttributeAndKeywordData[1],"None")
+        key = tierAndAttributeAndKeywordData[2]
+        if key in ATTACK_TYPE_DICT:
+            keyword = ATTACK_TYPE_DICT[key]
+        else:
+            keyword = battleKeyWord.get(("[" + key + "]"), "None")
         temp_description = f"""
 {tier}
+Attribute Type: {attribute}
+Keyword: {keyword}
+
 {data.get("desc", "")}
 """
         for word, en_name in battleKeyWord.items():
@@ -322,6 +343,7 @@ class Limbus(commands.Cog):
 
         embed.description = temp_description
         temp_gift_id = gift
+        embed.color = COLOR_DICT_SIN.get(tierAndAttributeAndKeywordData[1],discord.Color.default())
         file = None
         if os.path.exists(f"./data/limbus_images/gift_art/{temp_gift_id}.png"):
             image_path = f"./data/limbus_images/gift_art/{temp_gift_id}.png"
@@ -379,7 +401,7 @@ Clue: {clue}
     async def keyword_limbus(
         self, interaction: discord.Interaction, battle_keyword: str,private : bool= False
     ):
-        """Abnormality Observations from Limbus"""
+        """Displays and explains keyword from Limbus. Such as Sinking"""
 
         data = self.battlekeyword_data.get(battle_keyword)
         embed = discord.Embed()

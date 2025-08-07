@@ -3,6 +3,7 @@ import discord
 from discord.ui import Button, View
 import json
 import re
+import os
 
 PRIME_LINK = "https://malcute.aeonmoon.page"
 EMOJI_LIMBUS_HEAD = "<:limbusheads:1280657716871692472>"
@@ -17,6 +18,7 @@ SIN_DICT = {
     "WHITE": "",
     "BLACK": "",
 }
+
 COLOR_DICT_SIN = {
     "CRIMSON": discord.Color.red(),
     "SCARLET": discord.Color.orange(),
@@ -36,21 +38,35 @@ RESIST_NAMING = {
     1.25: "Weak",
     0: "Immune",
 }
-attack_type_dict = {
+ATTACK_TYPE_DICT = {
     "HIT": "Blunt",
+    "Hit":"Blunt",
+    "hit": "Blunt",
     "SLASH": "Slash",
+    "Slash": "Slash",
+    "slash": "Slash",
     "NONE": "",
     "PENETRATE": "Pierce",
+    "Penetrate": "Pierce",
+    "penetrate": "Pierce",
     "ATTACK": "",
+
 }
 color_dict = {
     1: discord.Color.green(),
     2: discord.Color.red(),
     3: discord.Color.gold(),
 }
+
 with open("./data/Limbus_Data/EN_BattleKeywords.json", encoding="utf-8") as f:
-    keyword_dict = json.load(f)
-keyword_dict = keyword_dict["dataList"]
+    keyword_dict = json.load(f)["dataList"]
+
+for file in os.listdir("./data/Limbus_Data"):
+    if file.startswith("EN_BattleKeywords") and file.endswith(".json"):
+        with open(f"./data/Limbus_Data/{file}", encoding="utf-8") as f:
+            temp = json.load(f)["dataList"]
+            keyword_dict.extend(temp)
+
 BATTLEKEYWORD = {}
 for dicts in keyword_dict:
     BATTLEKEYWORD["[" + dicts.get("id", "") + "]"] = dicts.get("name", "")
@@ -70,7 +86,7 @@ def skill_description(skill_data: dict, skill_effect: dict, skill_num):
     }
     ### Skill Data
     skill_id = skill_data.get("skill", "")
-    atk_type = attack_type_dict.get(skill_data["atk_type"], "NONE")
+    atk_type = ATTACK_TYPE_DICT.get(skill_data["atk_type"], "NONE")
     def_type = def_type_dict.get(skill_data["def_type"], "ATTACK")
     attribute = skill_data.get("attribute_type", "")
     embed_color = COLOR_DICT_SIN.get(attribute, discord.Color.yellow())
@@ -310,7 +326,7 @@ async def identity_data_analysis(
     name = data_in_json["name"].replace("\n", " ")
     resist = []
     for i in data_in_json.get("attack_resist", []):
-        temp_atk_type = attack_type_dict[i.get("atk_type")]
+        temp_atk_type = ATTACK_TYPE_DICT[i.get("atk_type")]
         temp_atk_value = RESIST_NAMING.get(i.get("value"), "Unknown")
         temp = f"{temp_atk_type}: {temp_atk_value}({i.get('value')})"
         resist.append(temp)
@@ -354,6 +370,8 @@ async def identity_data_analysis(
     embed.set_image(url=image_full_art_path)
     embed_list = [[name, Identity_basic_description, image_full_art_path, embed.color]]
     for keys in skill_data.keys():
+        if keys not in skill_effect:
+            continue  # or log an error or warning
         embed_list.append(
             skill_description(
                 skill_data=skill_data[keys],
