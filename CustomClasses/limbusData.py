@@ -17,6 +17,15 @@ SIN_DICT = {
     "VIOLET": "Envy",
     "WHITE": "",
     "BLACK": "",
+    "Crimson": "Wrath",
+    "Scarlet": "Lust",
+    "Amber": "Sloth",
+    "Shamrock": "Gluttony",
+    "Azure": "Gloom",
+    "Indigo": "Pride",
+    "Violet": "Envy",
+    "White": "",
+    "Black": "",
 }
 
 COLOR_DICT_SIN = {
@@ -29,6 +38,7 @@ COLOR_DICT_SIN = {
     "VIOLET": discord.Color.purple(),
     "WHITE": discord.Color.lighter_grey(),
     "BLACK": discord.Color.darker_grey(),
+    "NEUTRAL": discord.Color.default() 
 }
 RESIST_NAMING = {
     0.5: "Ineffective",
@@ -58,6 +68,19 @@ color_dict = {
     3: discord.Color.gold(),
 }
 
+
+class DeleteButton(discord.ui.Button):
+    def __init__(self):
+        super().__init__(label="Delete", style=discord.ButtonStyle.danger)
+
+    async def callback(self, interaction: discord.Interaction):
+        view: EnemyView = self.view  # type hint for clarity
+        if interaction.user == view.author:
+            await interaction.message.delete()
+        else:
+            await interaction.response.send_message(
+                "You cannot delete this message.", ephemeral=True
+            )
 with open("./data/Limbus_Data/EN_BattleKeywords.json", encoding="utf-8") as f:
     keyword_dict = json.load(f)["dataList"]
 
@@ -565,3 +588,146 @@ async def story_data_display(
         view=buttons,
         ephemeral=private
     )
+
+###################### ENEMEY ##############################
+
+def format_resists(resist_info: dict) -> str:
+    atk_line = " | ".join([f"{r['type'].title()}: {r['value']}" for r in resist_info.get("atkResistList", [])])
+    attr_line = " | ".join([f"{r['type'].title()}: {r['value']}" for r in resist_info.get("attributeResistList", [])])
+    return f"**Atk Resist:** {atk_line}\n**Attr Resist:** {attr_line}"
+
+
+# --- Singular Part Embed ---
+def build_part_embed(enemy_id: str, part: dict):
+    embed = discord.Embed(
+        title=f"{part['EN_Name']}",
+        color=discord.Color.green()
+    )
+    hp = part['hp']['defaultStat']
+    resists = format_resists(part.get("resistInfo", {}))
+    for word, en_name in BATTLEKEYWORD.items():
+        resists = resists.replace(word, en_name)
+    for word, en_name in SIN_DICT.items():
+        resists = resists.replace(word, en_name)
+    for word, en_name in ATTACK_TYPE_DICT.items():
+        resists = resists.replace(word, en_name)
+    embed.add_field(
+        name="Stats",
+        value=f"HP: {hp}\n{resists}",
+        inline=False
+    )
+    return embed
+
+
+# --- Singular Skill Embed ---
+def build_skill_embed(enemy_id: str, skill: dict):
+    data = skill["skillData"][0]
+    effect = skill["skillEffect"]["levelList"][0]
+    name = effect["name"]
+
+    embed = discord.Embed(
+        title=f"{name} (Tier {skill['skillTier']})",
+        color=discord.Color.blue()
+    )
+
+    if "skillData" not in skill or "skillEffect" not in skill:
+        embed.description = "No data available."
+        return embed
+
+
+    desc = f"Type: {data['atkType']}\nAttr: {data['attributeType']}\nWeight/Target Number: {data['targetNum']}\nBase: {data['defaultValue']}\n"
+
+    desc += f"\n{effect.get('desc', '')}\n"
+    coins = data.get("coinList", [])
+    coin_effects = effect.get("coinlist", [])
+
+    for idx, coin in enumerate(coins):
+        scale = coin['scale']
+        effs = coin_effects[idx].get("coindescs", []) if idx < len(coin_effects) else []
+        eff_text = " | ".join([e["desc"] for e in effs])
+        desc += f"**{EMOJI_LIMBUS_HEAD} {idx+1}: +{scale}** → {eff_text}\n"
+
+    for word, en_name in BATTLEKEYWORD.items():
+        desc = desc.replace(word, en_name)
+    for word, en_name in SIN_DICT.items():
+        desc = desc.replace(word, en_name)
+    embed.description = desc
+    embed.color = COLOR_DICT_SIN[data['attributeType'].upper()]
+    embed.set_image(url=f"{PRIME_LINK}/django_static/Limbus_Data/skill_art/{skill['id']}.png")
+    return embed
+
+
+def build_main_embed(enemy_id: str, enemy: dict):
+    embed = discord.Embed(
+        title=f"{enemy['EN_Name']} ({enemy_id})",
+        color=discord.Color.purple()
+    )
+
+    desc = f"**Risk Level**: {enemy['risk']}\n**Level**: {enemy['level']}\n**HP**: {enemy['hp']}\n\n"
+    passives = enemy.get("passives", [])
+    if passives:
+        for idx, passive in enumerate(passives, start=1):
+            desc += f"**{idx}. {passive['name']}**\n{passive['desc']}\n\n"
+    else:
+        desc = "No passives available."
+
+    file = None
+    for word, en_name in BATTLEKEYWORD.items():
+        desc = desc.replace(word, en_name)
+    for word, en_name in SIN_DICT.items():
+        desc = desc.replace(word, en_name)
+    embed.description = desc.strip()
+    # if os.path.exists(f"./data/limbus_images/portraits/{enemy_id}_portrait.png"):
+    #     image_path = f"./data/limbus_images/portraits/{enemy_id}_portrait.png"
+    #     embed.set_image(url="attachment://image.png")
+    #     file = discord.File(image_path, filename="image.png")
+    return embed,file
+
+# --- Interactive View ---
+class EnemyView(discord.ui.View):
+    def __init__(self, enemy_id: str, enemy_data: dict):
+        super().__init__(timeout=None)
+        self.enemy_id = enemy_id
+        self.enemy_data = enemy_data
+
+        enemy = enemy_data[enemy_id]
+
+        # Add one button per part
+        for part in enemy["Parts"].values():
+            self.add_item(PartButton(enemy_id, part))
+
+        # Add one button per skill
+        for skill in enemy["Skills"].values():
+            self.add_item(SkillButton(enemy_id, skill))
+        
+        self.add_item(DeleteButton())
+
+            
+
+class PartButton(discord.ui.Button):
+    def __init__(self, enemy_id, part_data: dict):
+        super().__init__(
+            label=part_data["EN_Name"],
+            style=discord.ButtonStyle.green
+        )
+        self.enemy_id = enemy_id
+        self.part_data = part_data
+
+    async def callback(self, interaction: discord.Interaction):
+        embed = build_part_embed(self.enemy_id, self.part_data)
+        await interaction.response.edit_message(embed=embed, view=self.view)
+
+
+class SkillButton(discord.ui.Button):
+    def __init__(self, enemy_id, skill_data: dict):
+        super().__init__(
+            label=skill_data["skillEffect"]["levelList"][0]["name"],
+            style=discord.ButtonStyle.blurple
+        )
+        self.enemy_id = enemy_id
+        self.skill_data = skill_data
+
+    async def callback(self, interaction: discord.Interaction):
+        embed = build_skill_embed(self.enemy_id, self.skill_data)
+        await interaction.response.edit_message(embed=embed, view=self.view)
+

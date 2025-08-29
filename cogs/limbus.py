@@ -21,7 +21,11 @@ from CustomClasses.limbusData import (
     story_data_display,
     SIN_DICT,
     ATTACK_TYPE_DICT,
-    COLOR_DICT_SIN
+    COLOR_DICT_SIN,
+    build_skill_embed,
+    build_part_embed,
+    build_main_embed,
+    EnemyView
 )
 
 
@@ -114,6 +118,8 @@ class Limbus(commands.Cog):
         self.gift_tier_data = self.ego_gift_tier_generate()
         
         self.en_chapter_node_list = self.EnChapterNodeList_dict_generate()
+        with open("./data/Limbus_Data/Enemy_Final_All.json", 'r', encoding="utf-8") as f:
+            self.enemy_data = json.load(f)
 
     def load_bets(self):
         if not os.path.exists(BETS_FILE):
@@ -143,17 +149,17 @@ class Limbus(commands.Cog):
 
     #     await ctx.send(f"{ctx.author.name} placed a bet on **{choice.upper()}**! Vote now to win 100 fake coins!")
 
-    @commands.command(name="xichun")
-    async def xichun(self, ctx):
-        bets = self.load_bets()
-        user_id = str(ctx.author.id)
+    # @commands.command(name="xichun")
+    # async def xichun(self, ctx):
+    #     bets = self.load_bets()
+    #     user_id = str(ctx.author.id)
 
-        if user_id not in bets:
-            await ctx.send(f"{ctx.author.name}, you did not place a bet.")
-            return
+    #     if user_id not in bets:
+    #         await ctx.send(f"{ctx.author.name}, you did not place a bet.")
+    #         return
 
-        bet = bets[user_id].get("bet", "???").upper()
-        await ctx.send(f"{ctx.author.name}, your current bet is **{bet}**. All bets are closed.")
+    #     bet = bets[user_id].get("bet", "???").upper()
+    #     await ctx.send(f"{ctx.author.name}, your current bet is **{bet}**. All bets are closed.")
 
     def EnChapterNodeList_dict_generate(self):
         with open(f"./data/ENChapterNodeList.json", encoding="utf-8") as f:
@@ -514,6 +520,38 @@ Speaker: {teller}
 
         # Send the embed separately with the image
         await ctx.send(embed=embed, file=file)
+
+
+    async def enemy_autocomplete(self, interaction: discord.Interaction, current: str):
+        current_lower = current.lower()
+        choices = []
+
+        for eid, e in self.enemy_data.items():
+            display_name = f"{e['EN_Name']} ({e['enemyType']}) [{eid}]"
+            if current_lower in e['EN_Name'].lower() or current_lower in str(eid):
+                choices.append(app_commands.Choice(name=display_name, value=eid))
+
+        # Limit to 25 choices (Discord limit)
+        return choices[:25]
+
+    # --- Command with autocomplete ---
+    @app_commands.command(name="limbus_enemy")
+    @app_commands.describe(enemy="Select an enemy")
+    @app_commands.autocomplete(enemy=enemy_autocomplete)
+    async def limbus_enemy(self, interaction: discord.Interaction, enemy: str):
+        return
+        # enemy here is the ID from autocomplete
+        enemy_id_str = str(enemy)
+        if enemy_id_str not in self.enemy_data:
+            await interaction.response.send_message("Enemy not found.", ephemeral=True)
+            return
+
+        embed, file = build_main_embed(enemy_id_str, self.enemy_data[enemy_id_str])
+        view = EnemyView(enemy_id_str, self.enemy_data)
+        if file:
+            await interaction.response.send_message(embed=embed, file=file, view=view)
+        else:
+            await interaction.response.send_message(embed=embed, view=view)
 
 
     def crop_image(self,img):
