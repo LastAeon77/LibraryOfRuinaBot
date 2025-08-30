@@ -533,27 +533,37 @@ Speaker: {teller}
 
         # Limit to 25 choices (Discord limit)
         return choices[:25]
+    
+    async def limbus_enemy_core(self, interaction: discord.Interaction, enemy: str, private: bool = False, spoiler:bool = False):
+        enemy_id_str = str(enemy)
+        if enemy_id_str not in self.enemy_data:
+            await interaction.response.send_message("Enemy not found.", ephemeral=private)
+            return
+
+        embed, file = build_main_embed(enemy_id_str, self.enemy_data[enemy_id_str],spoiler=spoiler)
+        view = EnemyView(enemy_id_str, self.enemy_data, spoiler= spoiler)
+        view.author = interaction.user
+        if file:
+            await interaction.response.send_message(embed=embed, file=file, view=view,ephemeral= private)
+        else:
+            await interaction.response.send_message(embed=embed, view=view, ephemeral= private)
 
     # --- Command with autocomplete ---
     @app_commands.command(name="limbus_enemy")
     @app_commands.describe(enemy="Select an enemy")
     @app_commands.autocomplete(enemy=enemy_autocomplete)
-    async def limbus_enemy(self, interaction: discord.Interaction, enemy: str):
-        return
-        # enemy here is the ID from autocomplete
-        enemy_id_str = str(enemy)
-        if enemy_id_str not in self.enemy_data:
-            await interaction.response.send_message("Enemy not found.", ephemeral=True)
-            return
-
-        embed, file = build_main_embed(enemy_id_str, self.enemy_data[enemy_id_str])
-        view = EnemyView(enemy_id_str, self.enemy_data)
-        if file:
-            await interaction.response.send_message(embed=embed, file=file, view=view)
-        else:
-            await interaction.response.send_message(embed=embed, view=view)
+    async def limbus_enemy(self, interaction: discord.Interaction, enemy: str, private: bool = False):
+        await self.limbus_enemy_core(interaction, enemy, private, spoiler=False)
 
 
+
+    @app_commands.command(name="limbus_enemy_spoiler")
+    @app_commands.describe(enemy="Select an enemy")
+    @app_commands.autocomplete(enemy=enemy_autocomplete)
+    async def limbus_enemy_spoiler(self, interaction: discord.Interaction, enemy: str, private: bool = False):
+        await self.limbus_enemy_core(interaction, enemy, private, spoiler=True)
+
+    
     def crop_image(self,img):
         width, height = img.size
         left = width // 4

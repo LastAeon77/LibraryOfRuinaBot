@@ -142,8 +142,8 @@ async def hhpp(ctx):
     )
 
 async def main():
-    # logging.basicConfig(level=logging.INFO)
-    # discord.utils.setup_logging()
+    logging.basicConfig(level=logging.INFO)
+    discord.utils.setup_logging()
     async with bot:
         for file in os.listdir("cogs"):
             # file == limbus.py is for testing only
