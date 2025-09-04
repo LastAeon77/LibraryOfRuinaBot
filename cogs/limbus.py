@@ -402,9 +402,7 @@ Clue: {clue}
         else:
             await interaction.followup.send(embed=embed, view=view, ephemeral=private)
 
-    @app_commands.command()
-    @app_commands.autocomplete(battle_keyword=battlekeyword_autocomplete)
-    async def keyword_limbus(
+    async def keyword_limbus_core(
         self, interaction: discord.Interaction, battle_keyword: str,private : bool= False
     ):
         """Displays and explains keyword from Limbus. Such as Sinking"""
@@ -430,6 +428,22 @@ Clue: {clue}
         else:
             await interaction.followup.send(embed=embed, view=view, ephemeral=private)
 
+    @app_commands.command()
+    @app_commands.autocomplete(battle_keyword=battlekeyword_autocomplete)
+    async def keyword_limbus(
+        self, interaction: discord.Interaction, battle_keyword: str,private : bool= False
+    ):
+        """Displays and explains keyword from Limbus. Such as Sinking"""
+        await self.keyword_limbus_core(interaction,battle_keyword,private)
+
+    @app_commands.command()
+    @app_commands.autocomplete(battle_keyword=battlekeyword_autocomplete)
+    async def passive_keyword_limbus(
+        self, interaction: discord.Interaction, battle_keyword: str,private : bool= False
+    ):
+        """Displays and explains keyword from Limbus. Such as Sinking. Same as keyword_limbus."""
+        await self.keyword_limbus_core(interaction,battle_keyword,private)
+        
     @app_commands.command()
     async def emote_test(self,interaction: discord.Interaction):
         await interaction.response.send_message("<:limbusheads:1280657716871692472>")
@@ -553,6 +567,7 @@ Speaker: {teller}
     @app_commands.describe(enemy="Select an enemy")
     @app_commands.autocomplete(enemy=enemy_autocomplete)
     async def limbus_enemy(self, interaction: discord.Interaction, enemy: str, private: bool = False):
+        "This will display limbus enemy data with images and no spoilers."
         await self.limbus_enemy_core(interaction, enemy, private, spoiler=False)
 
 
@@ -561,6 +576,7 @@ Speaker: {teller}
     @app_commands.describe(enemy="Select an enemy")
     @app_commands.autocomplete(enemy=enemy_autocomplete)
     async def limbus_enemy_spoiler(self, interaction: discord.Interaction, enemy: str, private: bool = False):
+        """This will display Limbus enemy data with spoilers on it. No image included."""
         await self.limbus_enemy_core(interaction, enemy, private, spoiler=True)
 
     

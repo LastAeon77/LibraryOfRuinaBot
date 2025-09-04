@@ -708,11 +708,10 @@ def build_main_embed(enemy_id: str, enemy: dict, spoiler: bool = False):
         f"**HP**: {enemy['hp']}\n\n"
     )
     passives = enemy.get("passives", [])
-    if passives:
-        for idx, passive in enumerate(passives, start=1):
-            desc += f"**{idx}. {passive['name']}**\n{passive['desc']}\n\n"
-    else:
-        desc = "No passives available."
+    for idx, passive in enumerate(passives, start=1):
+        if passive is None:
+            continue
+        desc += f"**{idx}. {passive['name']}**\n{passive['desc']}\n\n"
 
     for word, en_name in BATTLEKEYWORD.items():
         desc = desc.replace(word, en_name)
@@ -740,8 +739,10 @@ class MainButton(discord.ui.Button):
         self.spoiler = spoiler
 
     async def callback(self, interaction: discord.Interaction):
-        embed, file = build_main_embed(self.enemy_id, self.enemy, self.spoiler)
-        await interaction.response.edit_message(embed=embed, attachments=[file] if file else [], view=self.view)
+        view: EnemyView = self.view
+        if interaction.user == view.author:
+            embed, file = build_main_embed(self.enemy_id, self.enemy, self.spoiler)
+            await interaction.response.edit_message(embed=embed, attachments=[file] if file else [], view=self.view)
 
 # --- Interactive View ---
 class EnemyView(discord.ui.View):
@@ -778,8 +779,10 @@ class PartButton(discord.ui.Button):
 
 
     async def callback(self, interaction: discord.Interaction):
-        embed = build_part_embed(self.enemy_id, self.part_data, self.spoiler)
-        await interaction.response.edit_message(embed=embed, view=self.view)
+        view: EnemyView = self.view
+        if interaction.user == view.author:
+            embed = build_part_embed(self.enemy_id, self.part_data, self.spoiler)
+            await interaction.response.edit_message(embed=embed, view=self.view)
 
 
 class SkillButton(discord.ui.Button):
@@ -793,6 +796,8 @@ class SkillButton(discord.ui.Button):
         self.spoiler = spoiler
 
     async def callback(self, interaction: discord.Interaction):
-        embed = build_skill_embed(self.enemy_id, self.skill_data, self.spoiler)
-        await interaction.response.edit_message(embed=embed, view=self.view)
+        view: EnemyView = self.view
+        if interaction.user == view.author:
+            embed = build_skill_embed(self.enemy_id, self.skill_data, self.spoiler)
+            await interaction.response.edit_message(embed=embed, view=self.view)
 
